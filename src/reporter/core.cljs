@@ -1,3 +1,3 @@
 (ns reporter.core)
 
-(.log js/console "Hello world")
+(.log js/console js/full_data)

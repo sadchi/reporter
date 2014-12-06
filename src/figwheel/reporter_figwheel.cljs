@@ -1,4 +1,4 @@
-(ns perfection-figwheel
+(ns reporter-figwheel 
   (:require [figwheel.client :as fw :include-macros true]))
 
 (fw/watch-and-reload)
