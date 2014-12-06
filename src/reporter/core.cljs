@@ -1,3 +1,9 @@
-(ns reporter.core)
+(ns reporter.core
+  (:require [reagent.core :as r :refer [atom]]))
 
-(.log js/console js/full_data)
+(defn home []
+  [:div
+   [:div 
+    [:h1 "Reagent Examle"]]])
+
+(r/render-component [home] (.getElementById js/document "app"))

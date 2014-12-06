@@ -1,1 +1,0 @@
-var full_data = 5;
