@@ -7,19 +7,18 @@
                  ]
 
 
-  :cljsbuild    {
-                 :builds {
-                          :reporter {
-                                     :source-paths ["src"] 
-                                     :compiler {
-                                                :preamble ["reagent/react.js"]
-                                                :output-to "target/reporter.js"
-                                                :output-dir "target/out"
-                                                :optimizations :simple 
-                                                :pretty-print true
-                                                :source-map "target/reporter.js.map"
-                                                }
-                                     }
-                          }
+  :cljsbuild    {:builds 
+                 {:reporter 
+                  {:source-paths ["src"]
+                   :compiler 
+                   {:preamble ["reagent/react.js"]
+                    :output-to "target/reporter.js"
+                    :output-dir "target/out"
+                    :optimizations :simple 
+                    :pretty-print true
+                    :source-map "target/reporter.js.map"
+                    }
+                   }
+                  }
                  }
   )
