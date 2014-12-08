@@ -1,0 +1,16 @@
+@import aux-mixins
+
+=header-generic($primary-color, $secondary-color, $border-width)
+  margin           : $border-width 0px $border-width 0px
+  background-color : $primary-color
+  $b1 : 0px 1px  0px 0px  darken($primary-color, 5%)
+  $b2 : 0px -1px 0px 0px darken($primary-color, 5%)
+  $b3 : 0px (-1+$border-width) 0px 0px $secondary-color
+  $b4 : 0px (1-$border-width) 0px 0px $secondary-color
+  $b5 : 0px ($border-width) 0px 0px darken($secondary-color, 5%)
+  $b6 : 0px (-$border-width) 0px 0px darken($secondary-color, 5%)
+  +box-shadow(($b1, $b2, $b3, $b4, $b5, $b6))
+
+
+
+

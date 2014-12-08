@@ -1,7 +1,9 @@
 @import reset
+@import variables
 @import grid
 @import fonts
-@import variables
+@import head_foot
+
 
 *
   box-sizing  : border-box
@@ -24,6 +26,7 @@ body
   @extend %double-size-padding
 
 .menu
+  +header-generic($green-dark, $green-light, 20px)
   @extend %double-size-padding
   color            : $primary-font-light
   background-color : $color-success
