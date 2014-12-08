@@ -1,0 +1,125 @@
+@import reset
+@import grid
+@import fonts
+@import variables
+
+*
+  box-sizing  : border-box
+
+
+body
+  +fixed-width-grid
+  +default-font
+  color       : $primary-3
+  line-height : 150%
+
+=big-header($name)
+  &:before
+    content     : $name
+    color       : $accent-0
+    font-size   : $font-size-bigger
+    line-height : $font-size-bigger*2
+    display     : block
+    clear       : left
+
+.summary
+  +big-header("Summary")
+  +row
+
+.overall_stats
+  +column(2)
+  font-size : $font-size-normal
+
+.status_stats
+  +last-column
+  font-size  : $font-size-normal
+  text-align : center
+
+.cases_info
+  height : 50%
+  &:after
+    content: " case(s)"
+
+.tests_info
+  height : 50%
+  &:after
+    content: " test(s)"
+
+
+.stat_failed, .stat_undefined, .stat_passed
+  +column(4)
+  font-size   : $font-size-bigger
+  line-height : 100%
+
+.stat_failed
+  color : $color-danger
+  & .stat_quantity
+    &:after
+      content : " Failed"
+
+
+.stat_passed
+  color : $color-success
+  & .stat_quantity
+    &:after
+      content : " Passed"
+
+.stat_undefined
+  color : $color-undef
+  & .stat_quantity
+    &:after
+      content : " Undef"
+
+.stat_percent
+  font-size : $font-size-normal
+
+
+.details
+  +big-header("Details")
+
+.set
+  font-size     : $font-size-big
+  
+
+    
+.test
+  margin-top   : 0.8em
+  font-size    : $font-size-normal
+
+.test_content
+  font-size    : $font-size-small
+
+
+=test-status
+  display      : inline-block
+  width        : 5em
+  color        : $primary-0
+  text-align   : center
+  margin-right : $column-gutter/2
+
+=case
+  border-bottom : 1px solid $primary-2
+
+
+
+.case_passed
+  +case
+  &:before
+    +test-status
+    content : "Passed"
+    background-color : $color-success
+
+.case_failed
+  +case
+  &:before
+    +test-status
+    content : "Failed"
+    background-color : $color-danger
+
+.case_undefined
+  +case
+  &:before
+    +test-status
+    content : "Undef"
+    background-color : $color-undef
+

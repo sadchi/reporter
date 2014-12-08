@@ -1,0 +1,63 @@
+$grid-width    : 1000px !default
+$column-gutter : 20px !default
+$row-gutter    : 20px !default
+$grid-columns  : 12 !default
+
+$golden-small  : $grid-columns * 38.2716 / 100
+$golden-large  : $grid-columns * 61.7283 / 100
+
+
+@function column_width($columns)
+  $value: 100% / $grid_columns * $columns
+  @return $value
+    
+=clearfix
+  overflow: hidden
+  *zoom: 1
+
+
+%reset-padding-margin
+  margin  : 0
+  padding : 0
+
+%default-padding
+  padding-left  : $column-gutter/2
+  padding-right : $column-gutter/2
+
+
+=fixed-width-grid
+  @extend %default-padding
+  width         : $grid-width
+
+=view-port-grid
+  @extend %default-padding
+  height        : 100vh
+  width         : 100vw
+
+=fluid-grid
+  @extend %default-padding
+  width         : 100%
+
+=shift($width)
+  margin-left   : column-width($width)
+
+=row($row-gutter: $row-gutter, $text-align: left)
+  overflow       : hidden
+  padding-top    : $row-gutter / 2
+  padding-bottom : $row-gutter / 2
+  text-align     : $text-align
+  font-size      : 0px
+
+=last-column
+  @extend %default-padding
+  +clearfix
+  display       : block
+  height        : 100%
+
+=column($width)
+  @extend %default-padding
+  display       : block
+  float         : left
+  width         : column-width($width)
+  height        : 100%
+  
