@@ -7,11 +7,17 @@
                  [lein-haml-sass "0.2.7-SNAPSHOT"]]
 
 
-  :sass {
-         :src "sass"
-         :output-directory "css"
-         :delete-output-dir true
-         }
+  :haml         {
+                 :src "haml"
+                 :output-directory "."
+                 }
+  
+  :sass         {
+                 :src "sass"
+                 :output-directory "css"
+                 :output-extension "css"
+                 :delete-output-dir true
+                 }
 
   :cljsbuild    {
                  :builds {

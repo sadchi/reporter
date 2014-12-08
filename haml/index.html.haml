@@ -1,0 +1,17 @@
+!!! HTML
+%html
+  %head
+    %title Test Report
+    %link(rel='stylesheet' type='text/css' href='css/report.css')
+    %script(src='data.js')
+  %body
+    .menu
+      %ul
+        %li Options
+        %li.last Live search
+    
+    .main-container
+      TEst test TEST
+    %script{'src'=>'target/reporter.js'}
+    / %script reporter.core.run();
+

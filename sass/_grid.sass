@@ -1,4 +1,4 @@
-$grid-width    : 1000px !default
+$grid-width    : 1280px !default
 $column-gutter : 20px !default
 $row-gutter    : 20px !default
 $grid-columns  : 12 !default
@@ -24,10 +24,14 @@ $golden-large  : $grid-columns * 61.7283 / 100
   padding-left  : $column-gutter/2
   padding-right : $column-gutter/2
 
+%double-size-padding
+  padding-left  : $column-gutter
+  padding-right : $column-gutter
 
 =fixed-width-grid
-  @extend %default-padding
   width         : $grid-width
+  padding       : 0
+  margin        : 0 auto
 
 =view-port-grid
   @extend %default-padding
