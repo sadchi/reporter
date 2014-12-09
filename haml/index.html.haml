@@ -5,11 +5,19 @@
     %link(rel='stylesheet' type='text/css' href='css/report.css')
     %script(src='data.js')
   %body
-    .menu
-      Success
-    
     .main-container
-      TEst test TEST
+      .menu
+        Success
+      %h1.divider Overview
+      %h1 Feature 1
+      .level1
+        %h2 Suite 2
+        %h3 Suite 3
+        %h4 Suite 4
+        %h5 Suite 5
+        .level2
+          %h3 Test 1
+      %h1 Feature 2
     %script(src='target/reporter.js')
     / %script reporter.core.run();
 

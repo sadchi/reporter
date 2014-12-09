@@ -1,34 +1,40 @@
 @import reset
 @import variables
-@import grid
 @import fonts
 @import head_foot
-
+@import headers
 
 *
   box-sizing  : border-box
 
 
 html
-  font-size        : $font-size-base
-  background-color : $primary-bg
+  +default-font
+  font-size  : $font-size-base
+  height     : 100%
 
 body
-  +fixed-width-grid
-  +default-font
-  height           : 100vh
-  background-color : $primary-fg
-  color            : $primary-font
-  border-left      : 1px solid darken($primary-bg, 17%)
-  border-right     : 1px solid darken($primary-bg, 17%)
+  background : $primary-bg
+  height     : 100%
+  position   : relative
+  margin     : 0
 
 .main-container
-  @extend %double-size-padding
+  width            : 1000px
+  margin           : 0 auto
+  position         : relative
+  min-height       : 100%
+  color            : $primary-font
+  background-color : $primary-fg
+  border-right     : 1px solid darken($primary-bg, 17%)
+  border-left      : 1px solid darken($primary-bg, 17%)
+  padding          : $unit
+
 
 .menu
-  +header-generic($green-dark, $green-light, 20px)
-  @extend %double-size-padding
-  color            : $primary-font-light
-  background-color : $color-success
-  height           : 4rem
-//  background-color : darken($primary-bg, 17%) 
+  // +header-two-levels($green-dark, $green-light, 10px, $unit)
+  +header-generic($green-dark, $unit)
+  +default-font
+  color  : $primary-font-light
+  margin : (-$unit) (-$unit) 0px
+  
