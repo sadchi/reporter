@@ -1,0 +1,29 @@
+$group-sign-color : black !default
+
+=triangle-right($color, $size)
+  width: 0
+  height: 0
+  border-style: solid
+  border-width: $size/2 0 $size/2 $size*.866
+  border-color: transparent transparent transparent $color
+
+=triangle-down($color, $size)
+  width: 0
+  height: 0
+  border-style: solid
+  border-width: $size*.866 $size/2 0 $size/2   
+  border-color: $color transparent transparent transparent
+
+.group-closed
+  +triangle-right($group-sign-color, 8px)
+  display: inline-block
+  vertical-align : middle
+  margin-right : 4px
+
+.group-opened
+  +triangle-down($group-sign-color, 8px)
+  display: inline-block
+  vertical-align : middle
+  margin-right : 4px
+
+

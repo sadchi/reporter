@@ -1,23 +1,53 @@
 !!! HTML
-%html
+%html.base
   %head
     %title Test Report
     %link(rel='stylesheet' type='text/css' href='css/report.css')
     %script(src='data.js')
-  %body
-    .main-container
-      .menu
-        Success
-      %h1.divider Overview
-      %h1 Feature 1
-      .level1
-        %h2 Suite 2
-        %h3 Suite 3
-        %h4 Suite 4
-        %h5 Suite 5
-        .level2
-          %h3 Test 1
-      %h1 Feature 2
-    %script(src='target/reporter.js')
-    / %script reporter.core.run();
+  %body.main-container
+    .header
+      Success!
+    .header.header--light
+      Options
+    .container
+      .section
+        .heading.heading--h1.heading__divider
+          Overview
+      .section.section--alt
+        .heading.heading--h1.heading__divider
+          Feature A
+        .sub-section
+          .heading.heading--h2 
+            .group-closed 
+            Suite S1
+          .sub-section
+            .heading.heading--h5
+            .group-opened
+            Test T1
+          .heading.heading--h2 Suite S2
+          .sub-section
+            .heading.heading--h3 SubSuite SS1
+            .text
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
+            .sub-section
+              .heading.heading--h5 Test T2
+              .sub-section
+                .text
+                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
+          .heading.heading--h2 Suite S3
+      .section
+        .heading.heading--h1
+          Feature B
+      .section.section--alt
+        .heading.heading--h1
+          Feature C
+      .section
+        .heading.heading--h1
+          Feature D
+
+    .footer
+      ahuba production
+      
+    -# %script(src='target/reporter.js')
+    -# %script reporter.core.run();
 

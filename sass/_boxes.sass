@@ -1,0 +1,76 @@
+@import shadows
+
+$font-size-base       : 16px !default
+$backdrop-color       : black !default
+
+$main-container-back   : white !default
+$main-container-color  : black !default
+$main-container-width  : 1000px !default
+$main-container-shadow : 0px 0px 20px rgba(black, 1) !default
+
+
+$header-back       : black !default
+$header-back-light : grey !default
+$header-color      : white !default
+$header-padding : 10px !default
+
+$footer-back       : black !default
+$footer-color      : white !default
+$footer-padding : 10px !default
+
+
+$section-padding    : 10px !default
+$section-sub-margin : 0 0 0 10px !default
+$section-sub-padding : 0 10px !default
+$section-back     : white !default
+$section-back-alt : grey !default
+
+
+=zero-box
+  padding : 0
+  margin  : 0
+
+.base
+  +zero-box
+  background : $backdrop-color
+  font-size  : $font-size-base
+  height     : 100%
+
+.main-container
+  background : $main-container-back
+  color      : $main-container-color
+  width      : $main-container-width
+  // min-height : 100%
+  padding    : 0
+  margin     : 0 auto
+  // position   : relative
+  +box-shadow($main-container-shadow)
+
+.header
+  margin  : 0
+  padding : $header-padding
+  background : $header-back
+  color      : $header-color
+
+.header--light
+  background : $header-back-light
+
+.footer
+  margin  : 0
+  padding : $footer-padding
+  background : $footer-back
+  color      : $footer-color
+
+.section
+  margin  : 0
+  padding : $section-padding
+  background : $section-back
+
+.section--alt
+  background : $section-back-alt
+
+.sub-section
+  padding : $section-sub-padding
+  margin  : $section-sub-margin
+  
+  
