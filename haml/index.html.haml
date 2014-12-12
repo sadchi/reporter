@@ -1,10 +1,10 @@
 !!! HTML
-%html.base
+%html
   %head
     %title Test Report
     %link(rel='stylesheet' type='text/css' href='css/report.css')
     %script(src='data.js')
-  %body.main-container
+  %body
     .header
       Success!
     .header.header--light
@@ -16,33 +16,28 @@
       .section.section--alt
         .heading.heading--h1.heading__divider
           Feature A
-        .sub-section
-          .heading.heading--h2.heading--underlined 
-            .group-closed 
-            Suite S1
-            %span.badges-group
-              %span.badge.badge--neutral 23
-              %span.badge.badge--positive 17
-              %span.badge.badge--negative 1
-          .sub-section
-            .heading.heading--h5
-            .group-opened
-            Test T1
-            %span.badges-group
-              %span.badge.badge--neutral 1
-              %span.badge.badge--positive 7
-              %span.badge.badge--negative 3
-          .heading.heading--h2 Suite S2
-          .sub-section
-            .heading.heading--h3 SubSuite SS1
-            .text
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
-            .sub-section
-              .heading.heading--h5 Test T2
-              .sub-section
-                .text
-                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
-          .heading.heading--h2 Suite S3
+        .heading.heading--h2.heading--underlined 
+          .group-closed 
+          Suite S1
+          %span.badges-group
+            %span.badge.badge--neutral 23
+            %span.badge.badge--positive 17
+            %span.badge.badge--negative 1
+        .heading.heading--h5
+        .group-opened
+        Test T1
+        %span.badges-group
+          %span.badge.badge--neutral 1
+          %span.badge.badge--positive 7
+          %span.badge.badge--negative 3
+        .heading.heading--h2 Suite S2
+        .heading.heading--h3 SubSuite SS1
+        .text
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
+        .heading.heading--h5 Test T2
+        .text
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
+        .heading.heading--h2 Suite S3
       .section
         .heading.heading--h1
           Feature B

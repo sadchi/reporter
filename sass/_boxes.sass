@@ -1,5 +1,4 @@
 @import shadows
-@import fonts
 
 $font-size-base       : 16px !default
 $backdrop-color       : black !default
@@ -33,19 +32,15 @@ $section-back-alt : grey !default
 
 .base
   +zero-box
-  +default-font
   background : $backdrop-color
-  font-size  : $font-size-base
   height     : 100%
 
 .main-container
   background : $main-container-back
   color      : $main-container-color
   width      : $main-container-width
-  // min-height : 100%
   padding    : 0
   margin     : 0 auto
-  // position   : relative
   +box-shadow($main-container-shadow)
 
 .header
