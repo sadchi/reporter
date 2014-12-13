@@ -1,17 +1,8 @@
 @import shadows
+@import fonts
 
 $group-sign-color : black !default
-
-
-$badge-default-font-size : 2rem !default
-$badge-border-color : gray !default
-$badge-neutral-border-width : 2px !default
-$badge-neutral-back : transparent !default
-$badge-positive-border-width : 0 !default
-$badge-positive-back : green !default
-$badge-negative-border-width : 0 !default
-$badge-negative-back : red !default
-
+$group-sign-size  : 1rem !default
 
 =triangle-right($color, $size)
   width: 0
@@ -28,42 +19,18 @@ $badge-negative-back : red !default
   border-color: $color transparent transparent transparent
 
 
-.badges-group
-  margin-left : 1em
-  float       : right
+.group-closed-sign
+  font-size : $group-sign-size
+  color     : $group-sign-color
+  width     : 1em
+  @extend .icons
+  @extend .icon-angle-right
 
-=badge($font-size)
-  font-size      : $font-size
-  min-width      : 2*$font-size
-  display        : inline-block
-  text-align     : center
-  margin-bottom : .25em
-
-.badge
-  +badge($badge-default-font-size)
-  
-.badge--neutral
-  background : $badge-neutral-back
-  +box-shadow(inset 0px 0px $badge-neutral-border-width 0px $badge-border-color)
-
-.badge--positive
-  background : $badge-positive-back
-  +box-shadow(inset 0px 0px $badge-positive-border-width 0px $badge-border-color)
-
-.badge--negative
-  background : $badge-negative-back
-  +box-shadow(inset 0px 0px $badge-negative-border-width 0px $badge-border-color)
-
-.group-closed
-  +triangle-right($group-sign-color, 8px)
-  display: inline-block
-  vertical-align : middle
-  margin-right : 4px
-
-.group-opened
-  +triangle-down($group-sign-color, 8px)
-  display: inline-block
-  vertical-align : middle
-  margin-right : 4px
+.group-opened-sign
+  font-size : $group-sign-size
+  color     : $group-sign-color
+  width     : 1em
+  @extend .icons
+  @extend .icon-angle-down
 
 

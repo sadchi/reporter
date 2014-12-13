@@ -1,13 +1,12 @@
 @import shadows
+@import flexbox
 
-$font-size-base       : 16px !default
 $backdrop-color       : black !default
 
 $main-container-back   : white !default
 $main-container-color  : black !default
 $main-container-width  : 1000px !default
 $main-container-shadow : 0px 0px 20px rgba(black, 1) !default
-
 
 $header-back       : black !default
 $header-back-light : grey !default
@@ -18,13 +17,15 @@ $footer-back       : black !default
 $footer-color      : white !default
 $footer-padding : 10px !default
 
-
-$section-padding    : 10px !default
-$section-sub-margin : 0 0 0 10px !default
+$section-padding     : 10px !default
+$section-sub-margin  : 0 0 0 10px !default
 $section-sub-padding : 0 10px !default
 $section-back     : white !default
-$section-back-alt : grey !default
+$section-border-width : 1px 0px !default
+$section-border-style : solid !default
+$section-border-color : black !default
 
+$section-head-padding : 10px !default
 
 =zero-box
   padding : 0
@@ -59,15 +60,26 @@ $section-back-alt : grey !default
   color      : $footer-color
 
 .section
-  margin  : 0
-  padding : $section-padding
+  margin-top : -1px
+  padding    : $section-padding
   background : $section-back
+  border-width : $section-border-width
+  border-style : $section-border-style
+  border-color : $section-border-color
 
-.section--alt
-  background : $section-back-alt
+.section__head
+  +flexbox
+  +align-items(center)
+  padding     : $section-head-padding
+
+  &:hover
+    background : rgba(#000000, .03)
+
+.section__head--grow
+  +flex(1 0 auto)
+
 
 .sub-section
   padding : $section-sub-padding
   margin  : $section-sub-margin
-  
-  
+

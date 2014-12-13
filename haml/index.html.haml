@@ -6,23 +6,38 @@
     %script(src='data.js')
   %body
     .header
-      Success!
+      .heading.heading--h1.error
+        FAILED!
     .header.header--light
       Options
     .container
       .section
-        .heading.heading--h1.heading__divider
+        .heading.heading--h1
           Overview
-      .section.section--alt
-        .heading.heading--h1.heading__divider
-          Feature A
-        .heading.heading--h2.heading--underlined 
+      .section
+        .section
+          .section__head
+            %span.group-closed-sign.error
+            .heading.heading--h1.section__head--grow
+              Feature A1
+            %span.heading.heading--h5.heading--no-padding
+              %span.error 0
+              %span /123
+        .heading.heading--h2
+          Feature A2
+        .heading.heading--h3
+          Feature A3
+        .heading.heading--h4
+          Feature A4
+        .section__head
+          %span.group-opened-sign
+          .heading.heading--h5
+            Feature A5
+        .text
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
+        .heading.heading--h2
           .group-closed 
           Suite S1
-          %span.badges-group
-            %span.badge.badge--neutral 23
-            %span.badge.badge--positive 17
-            %span.badge.badge--negative 1
         .heading.heading--h5
         .group-opened
         Test T1
@@ -34,14 +49,14 @@
         .heading.heading--h3 SubSuite SS1
         .text
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
-        .heading.heading--h5 Test T2
+        .heading.heading--h4 Test T2
         .text
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.
         .heading.heading--h2 Suite S3
       .section
         .heading.heading--h1
           Feature B
-      .section.section--alt
+      .section
         .heading.heading--h1
           Feature C
       .section
