@@ -34,4 +34,11 @@
                                      }
                           }
                  }
+
+  :aliases      {
+                 "bj" ["do" "clean" ["cljsbuild" "once"]]
+                 "bh" ["do" "clean" ["haml" "once"]]
+                 "bc" ["do" "clean" ["sass" "once"]]
+                 }
+
   )
