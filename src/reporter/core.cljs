@@ -2,6 +2,7 @@
   (:require [reagent.core :as r :refer [atom]]))
 
 (def counter (atom 0))
+(def data (js->clj js/data :keywordize-keys true))
 
 (defn header []
   [:div.header "FAILED"])
@@ -13,6 +14,8 @@
   [:div.container "TEST"])
 
 (defn main []
+  (let [ [first & rest] data]
+    (.log js/console (:status first)))   
   [:div [header]
    [body]
    [footer]])

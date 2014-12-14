@@ -37,8 +37,8 @@
 
   :aliases      {
                  "bj" ["do" "clean" ["cljsbuild" "once"]]
-                 "bh" ["do" "clean" ["haml" "once"]]
-                 "bc" ["do" "clean" ["sass" "once"]]
+                 "bh" ["do" ["haml" "once"]]
+                 "bc" ["do" ["sass" "once"]]
                  }
 
   )
