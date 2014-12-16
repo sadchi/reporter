@@ -1,15 +1,16 @@
 (ns reporter.core
-  (:require [reagent.core :as r :refer [atom]]))
+  (:require [reagent.core :as r :refer [atom]]
+            [clojure.string :refer [join]]))
 
-(def data (js->clj js/data :keywordize-keys true))
+(def inner-test-results (js->clj js/data :keywordize-keys true))
 
-(def tree (atom (sorted-map)))
-(def vis-map  (atom {} ))
+(def test-data-structure-tree (atom (sorted-map)))
+(def visibility-map  (atom {} ))
 
 (defn add-sec [coll path]
-  (->> {:state :closed}
+  (->> {:state :opened}
        (get-in @coll path)
-       (#(assoc % :state :closed))
+       (#(assoc % :state :opened))
        (swap! coll assoc-in path )))
 
 (defn add-sec-recur [coll path]
@@ -41,20 +42,57 @@
        (recur (pop p))))))
 
 (defn inc-count-recur [coll path]
-  (update-count coll path inc)
-  )
+  (update-count coll path inc))
 
 (defn dec-count-recur [coll path]
-  (update-count coll path dec)
-  )
+  (update-count coll path dec))
 
-(defn initial-process-data [d tree vis-table]
+(defn initial-process-data [data tree vis-table]
   (doseq [item data]
     (let [path (:path item)]
       (inc-count-recur vis-table path)
-      (add-sec-recur tree path)
-      ))
-  )
+      (add-sec-recur tree path))))
+
+
+(defn render-test []
+  nil)
+
+
+(defn render-group-sign [state]
+  (let [class (if (= state :opened)
+                "group-opened-sign"
+                "group-closed-sign"
+               )]
+    [:span {:class class}]))
+
+(defn render-heading [level name]
+  (let [class (cond
+               (= level 0) "heading--h1"
+               (= level 1) "heading--h2"
+               (= level 2) "heading--h3"
+               (= level 3) "heading--h4"
+               (= level 4) "heading--h5"
+               :else "heading--h5"
+               )]
+    [:div {:class (join " " ["heading" class "section__head--grow"])} name]))
+
+(defn render-section-head [level name state]
+  [:div.section__head
+   (render-group-sign state)
+   (render-heading level name)
+   ])
+
+(defn render [tree level]
+  (for [k (keys tree)
+        :when (not= k :state)]
+    (let [v (get tree k)
+          state (:state v)]
+      [:div.section
+       (render-section-head level k state)
+       (if (= state :opened)
+         (render v (inc level)))])))
+
+
 
 (defn header []
   [:div.header "FAILED"])
@@ -63,10 +101,10 @@
   [:div.footer "ahuba production"])
 
 (defn body []
-  [:div.container "TEST"])
+  [:div.container (render @test-data-structure-tree 0)])
 
 (defn main []
-  (initial-process-data data tree vis-map                        )   
+  (initial-process-data inner-test-results test-data-structure-tree visibility-map                        )   
   [:div [header]
    [body]
    [footer]])

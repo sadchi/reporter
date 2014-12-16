@@ -4,6 +4,9 @@
 $group-sign-color : black !default
 $group-sign-size  : 1rem !default
 
+$divider-border-width : 1px !default
+$divider-border-color : black !default
+
 =triangle-right($color, $size)
   width: 0
   height: 0
@@ -33,4 +36,5 @@ $group-sign-size  : 1rem !default
   @extend .icons
   @extend .icon-angle-down
 
-
+.divider
+  border-bottom: $divider-border-width solid $divider-border-color
