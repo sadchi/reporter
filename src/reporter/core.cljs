@@ -3,22 +3,26 @@
             [clojure.string :refer [join]]))
 
 (def inner-test-results (js->clj js/data :keywordize-keys true))
-
 (def test-data-structure-tree (atom (sorted-map)))
 (def visibility-map  (atom {} ))
+(def update-func-table (atom {}))
 
-(defn add-sec [coll path]
+(defn add-sec! [coll path]
   (->> {:state :opened}
        (get-in @coll path)
        (#(assoc % :state :opened))
        (swap! coll assoc-in path )))
 
-(defn add-sec-recur [coll path]
+(defn add-update-func! [table atomic-tree path]
+  (swap! table assoc path (partial swap! atomic-tree path)))
+
+(defn add-sec-recur! [coll table path]
   (loop [p path]
     (if (empty? p)
       nil
       (do
-       (add-sec coll p)
+       (add-sec! coll p)
+       (add-update-func! table coll path)
        (recur (pop p))))))
 
 (defn update-path [coll path func]
@@ -47,11 +51,11 @@
 (defn dec-count-recur [coll path]
   (update-count coll path dec))
 
-(defn initial-process-data [data tree vis-table]
+(defn initial-process-data! [data tree vis-table update-table]
   (doseq [item data]
     (let [path (:path item)]
       (inc-count-recur vis-table path)
-      (add-sec-recur tree path))))
+      (add-sec-recur! tree update-table path))))
 
 
 (defn render-test []
@@ -76,19 +80,22 @@
                )]
     [:div {:class (join " " ["heading" class "section__head--grow"])} name]))
 
-(defn render-section-head [level name state]
+
+
+(defn render-section-head [level name state path]
   [:div.section__head
    (render-group-sign state)
    (render-heading level name)
    ])
 
-(defn render [tree level]
+(defn render [tree level path]
   (for [k (keys tree)
         :when (not= k :state)]
     (let [v (get tree k)
-          state (:state v)]
-      [:div.section
-       (render-section-head level k state)
+          state (:state v)
+          p (conj path k)]
+      [:div.section {:key (join "." p)}
+       (render-section-head level k state p)
        (if (= state :opened)
          (render v (inc level)))])))
 
@@ -101,10 +108,10 @@
   [:div.footer "ahuba production"])
 
 (defn body []
-  [:div.container (render @test-data-structure-tree 0)])
+  [:div.container (render @test-data-structure-tree 0 [])])
 
 (defn main []
-  (initial-process-data inner-test-results test-data-structure-tree visibility-map                        )   
+  (initial-process-data! inner-test-results test-data-structure-tree visibility-map update-func-table)   
   [:div [header]
    [body]
    [footer]])
