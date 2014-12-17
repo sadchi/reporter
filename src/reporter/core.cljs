@@ -3,9 +3,9 @@
             [clojure.string :refer [join]]))
 
 (def inner-test-results (js->clj js/data :keywordize-keys true))
-(def test-data-structure-tree (atom (sorted-map)))
+(def report-structure (atom (sorted-map)))
 (def visibility-map  (atom {} ))
-(def update-func-table (atom {}))
+
 
 (defn add-sec! [coll path]
   (->> {:state :opened}
@@ -13,16 +13,13 @@
        (#(assoc % :state :opened))
        (swap! coll assoc-in path )))
 
-(defn add-update-func! [table atomic-tree path]
-  (swap! table assoc path (partial swap! atomic-tree path)))
 
-(defn add-sec-recur! [coll table path]
+(defn add-sec-recur! [coll path]
   (loop [p path]
     (if (empty? p)
       nil
       (do
        (add-sec! coll p)
-       (add-update-func! table coll path)
        (recur (pop p))))))
 
 (defn update-path [coll path func]
@@ -51,25 +48,31 @@
 (defn dec-count-recur [coll path]
   (update-count coll path dec))
 
-(defn initial-process-data! [data tree vis-table update-table]
+(defn initial-process-data! [data tree vis-table]
   (doseq [item data]
     (let [path (:path item)]
       (inc-count-recur vis-table path)
-      (add-sec-recur! tree update-table path))))
+      (add-sec-recur! tree path))))
 
 
-(defn render-test []
-  nil)
+
+(defn flip-state [state]
+  (cond
+   (= state :opened) :closed
+   (= state :closed) :opened))
+
+(defn flip-func! [path]
+  (swap! report-structure update-in (conj path :state) flip-state))
 
 
-(defn render-group-sign [state]
+(defn group-sign [state]
   (let [class (if (= state :opened)
                 "group-opened-sign"
                 "group-closed-sign"
                )]
     [:span {:class class}]))
 
-(defn render-heading [level name]
+(defn heading [level name]
   (let [class (cond
                (= level 0) "heading--h1"
                (= level 1) "heading--h2"
@@ -82,40 +85,43 @@
 
 
 
-(defn render-section-head [level name state path]
-  [:div.section__head
-   (render-group-sign state)
-   (render-heading level name)
-   ])
+(defn section-head [level name state path]
+  [:div.section__head 
+   {:on-click #(flip-func! path)}
+   [group-sign state]
+   [heading level name]])
 
-(defn render [tree level path]
+(defn render-tree [tree level path]
   (for [k (keys tree)
         :when (not= k :state)]
     (let [v (get tree k)
           state (:state v)
           p (conj path k)]
       [:div.section {:key (join "." p)}
-       (render-section-head level k state p)
+       [section-head level k state p]
        (if (= state :opened)
-         (render v (inc level)))])))
+         (render-tree v (inc level) p))])))
 
+
+
+
+
+(defn report-tree [tree]
+  [:div.container (render-tree @report-structure 0 [])])
 
 
 (defn header []
   [:div.header "FAILED"])
 
-(defn footer []
-  [:div.footer "ahuba production"])
-
-(defn body []
-  [:div.container (render @test-data-structure-tree 0 [])])
 
 (defn main []
-  (initial-process-data! inner-test-results test-data-structure-tree visibility-map update-func-table)   
-  [:div [header]
-   [body]
-   [footer]])
-    
+  [report-tree])
+
+
+
+
 
 (defn ^:export run []
-  (r/render-component [main] (.-body js/document)))
+  (initial-process-data! inner-test-results report-structure visibility-map)
+  (r/render-component [header] (.getElementById js/document "header"))
+  (r/render-component [main] (.getElementById js/document "main")))
