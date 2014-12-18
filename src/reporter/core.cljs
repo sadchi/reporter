@@ -5,7 +5,7 @@
 (def inner-test-results (js->clj js/data :keywordize-keys true))
 (def report-structure (atom (sorted-map)))
 (def visibility-map  (atom {} ))
-
+(def bottom-level 4)
 
 (defn add-sec! [coll path]
   (->> {:state :opened}
@@ -48,6 +48,7 @@
 (defn dec-count-recur [coll path]
   (update-count coll path dec))
 
+
 (defn initial-process-data! [data tree vis-table]
   (doseq [item data]
     (let [path (:path item)]
@@ -74,22 +75,41 @@
 
 (defn heading [level name]
   (let [class (cond
-               (= level 0) "heading--h1"
-               (= level 1) "heading--h2"
-               (= level 2) "heading--h3"
-               (= level 3) "heading--h4"
-               (= level 4) "heading--h5"
+               (= level 1) "heading--h1"
+               (= level 2) "heading--h2"
+               (= level 3) "heading--h3"
+               (= level 4) "heading--h4"
+               (= level 5) "heading--h5"
                :else "heading--h5"
                )]
     [:div {:class (join " " ["heading" class "section__head--grow"])} name]))
 
 
 
-(defn section-head [level name state path]
+(defn get-tests [path]
+  (->> inner-test-results
+       (filter (comp (partial = path) :path))
+       (seq)))
+
+(defn is-test? [path]
+  (->> inner-test-results
+       (map :path)
+       (filter (partial = path))
+       (seq)
+       (boolean)))
+
+(defn section-head [level state path]
   [:div.section__head 
    {:on-click #(flip-func! path)}
    [group-sign state]
-   [heading level name]])
+   [heading level (peek path)]])
+
+
+; (defn )
+
+(defn test-result [path]
+  [:div nil])
+
 
 (defn render-tree [tree level path]
   (for [k (keys tree)
@@ -97,17 +117,42 @@
     (let [v (get tree k)
           state (:state v)
           p (conj path k)]
-      [:div.section {:key (join "." p)}
-       [section-head level k state p]
-       (if (= state :opened)
-         (render-tree v (inc level) p))])))
+      [:div.section 
+       (list ^{:key (join "." p)}[section-head level state p]
+             (if (= state :opened)
+               (render-tree v (inc level) p)))])))
 
 
 
 
+; (defn tree-terminal [path]
+;   [:div "test"])
 
-(defn report-tree [tree]
-  [:div.container (render-tree @report-structure 0 [])])
+; (defn tree-non-terminal [path]
+;   (let [tree  (get-in @report-structure path)
+;         sub-paths (->> (keys tree) (filter (partial not= :state)))
+;         level (count path)
+;         state (:state tree)
+;         ]
+;     [section-head level state path]
+;     (when (= state :opened)
+;       (for [k sub-paths]
+;         ^{:key k} [tree-item (conj path k)]))))
+
+; (defn tree-item [path]
+;   [:div.section
+;    (if (is-test? path)
+;      [tree-terminal path]
+;      [tree-non-terminal path])])
+
+; (defn tree-root []
+;   [:div.container 
+;    (for [k (keys @report-structure)
+;          :when (not= k :state)]
+;      ^{:key k}[tree-item (vec k)])])
+
+(defn report-tree []
+  [:div.container (render-tree @report-structure 1 [])])
 
 
 (defn header []

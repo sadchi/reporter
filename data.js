@@ -28,6 +28,10 @@ var data=[
         "path" : [ "A", "A1", "A12"]
     },
     {
+        "status" : "SUCCESS",
+        "path" : [ "A", "A1", "A11", "T2"]
+    },
+    {
         "status" : "FAIL",
         "path" : [ "A", "A2"]
     },
