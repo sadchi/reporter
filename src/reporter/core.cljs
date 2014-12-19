@@ -1,6 +1,7 @@
 (ns reporter.core
   (:require [reagent.core :as r :refer [atom]]
-            [clojure.string :refer [join]]))
+            [clojure.string :refer [join]]
+            [cljs-uuid.core :as uuid]))
 
 (def inner-test-results (js->clj js/data :keywordize-keys true))
 (def report-structure (atom (sorted-map)))
@@ -66,8 +67,8 @@
   (swap! report-structure update-in (conj path :state) flip-state))
 
 
-(defn gen-key [obj]
-  ((comp str hash) obj))
+(defn gen-key []
+  (str (uuid/make-random)))
 
 (defn group-sign [state]
   (let [class (if (= state :opened)
@@ -113,27 +114,31 @@
 
 
 (defn render-table-row [coll]
+  ^{:key (gen-key)} 
   [:tr 
-   (for [cell (apply str coll)]
-     [:td cell])])
+   (for [value coll]
+     ^{:key (gen-key)} [:td value])])
 
 (defn meta-table [meta-item]
   [:table 
    (for [th (:columns meta-item [])]
-     ^{:key (gen-key th)} [:th th])
-   (loop [data (:data meta-item)]
-     (when-not (is-table-empty? data)
+     ^{:key (gen-key)} [:th th])
+   (loop [data (:data meta-item)
+          acc nil]
+     (if (is-table-empty? data)
+       (reverse acc)
        (->> data
             (map first)
-            (render-table-row))
-       (recur (map next data))))])
+            (render-table-row)
+            (conj acc)
+            (recur (map next data)))))])
 
 (defn meta-data-render [meta-data]
-  [:div {:key (gen-key meta-data)}
+  [:div {:key (gen-key)}
    (for [meta-item meta-data]
      (case (:type meta-item)
-       "text" ^{:key (gen-key meta-item)}[meta-text meta-item]
-       "table" ^{:key (gen-key meta-item)}[meta-table meta-item]
+       "text" ^{:key (gen-key)}[meta-text meta-item]
+       "table" ^{:key (gen-key)}[meta-table meta-item]
        nil))])
 
 
@@ -148,7 +153,7 @@
         meta-data (:meta test-info [])]
     [:div.inner-content 
      (for [fail fails]
-       ^{:key (gen-key fail)}[fail-render fail])
+       ^{:key (gen-key)}[fail-render fail])
      [meta-data-render meta-data]]))
 
 (defn test-result [path]
@@ -165,10 +170,10 @@
     (let [v (get tree k)
           state (:state v)
           p (conj path k)]
-      [:div.section {:key (gen-key p)} 
+      [:div.section {:key (gen-key)} 
        (if (is-test? p)
-         ^{:key (gen-key p)}[test-result p]
-         (list ^{:key (gen-key p)}[section-head level state p]
+         ^{:key (gen-key)}[test-result p]
+         (list ^{:key (gen-key)}[section-head level state p]
                (if (= state :opened)
                  (render-tree v (inc level) p))))])))
 
