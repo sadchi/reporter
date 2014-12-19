@@ -73,16 +73,12 @@
                )]
     [:span {:class class}]))
 
-(defn heading [level name]
+(defn heading [level s]
   (let [class (cond
-               (= level 1) "heading--h1"
-               (= level 2) "heading--h2"
-               (= level 3) "heading--h3"
-               (= level 4) "heading--h4"
-               (= level 5) "heading--h5"
+               (< 0 level 6) (str "heading--h" level)
                :else "heading--h5"
                )]
-    [:div {:class (join " " ["heading" class "section__head--grow"])} name]))
+    [:div {:class (join " " ["heading" class "section__head--grow"])} s]))
 
 
 
@@ -105,10 +101,9 @@
    [heading level (peek path)]])
 
 
-; (defn )
-
 (defn test-result [path]
-  [:div nil])
+  (let [state (get-in @report-structure (conj path :state))] 
+    [section-head bottom-level state path]))
 
 
 (defn render-tree [tree level path]
@@ -117,39 +112,14 @@
     (let [v (get tree k)
           state (:state v)
           p (conj path k)]
-      [:div.section 
-       (list ^{:key (join "." p)}[section-head level state p]
-             (if (= state :opened)
-               (render-tree v (inc level) p)))])))
+      [:div.section {:key (join "." p)} 
+       (if (is-test? p)
+         [test-result p]
+         (list [section-head level state p]
+               (if (= state :opened)
+                 (render-tree v (inc level) p))))])))
 
 
-
-
-; (defn tree-terminal [path]
-;   [:div "test"])
-
-; (defn tree-non-terminal [path]
-;   (let [tree  (get-in @report-structure path)
-;         sub-paths (->> (keys tree) (filter (partial not= :state)))
-;         level (count path)
-;         state (:state tree)
-;         ]
-;     [section-head level state path]
-;     (when (= state :opened)
-;       (for [k sub-paths]
-;         ^{:key k} [tree-item (conj path k)]))))
-
-; (defn tree-item [path]
-;   [:div.section
-;    (if (is-test? path)
-;      [tree-terminal path]
-;      [tree-non-terminal path])])
-
-; (defn tree-root []
-;   [:div.container 
-;    (for [k (keys @report-structure)
-;          :when (not= k :state)]
-;      ^{:key k}[tree-item (vec k)])])
 
 (defn report-tree []
   [:div.container (render-tree @report-structure 1 [])])
