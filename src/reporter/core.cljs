@@ -108,11 +108,25 @@
 (defn meta-text [meta-item]
   [:div.text  (:data meta-item)])
 
+(defn is-table-empty? [coll]
+  (every? nil? coll))
+
+
+(defn render-table-row [coll]
+  [:tr 
+   (for [cell (apply str coll)]
+     [:td cell])])
+
 (defn meta-table [meta-item]
   [:table 
    (for [th (:columns meta-item [])]
      ^{:key (gen-key th)} [:th th])
-   ])
+   (loop [data (:data meta-item)]
+     (when-not (is-table-empty? data)
+       (->> data
+            (map first)
+            (render-table-row))
+       (recur (map next data))))])
 
 (defn meta-data-render [meta-data]
   [:div {:key (gen-key meta-data)}
