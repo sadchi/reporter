@@ -66,6 +66,9 @@
   (swap! report-structure update-in (conj path :state) flip-state))
 
 
+(defn gen-key [obj]
+  ((comp str hash) obj))
+
 (defn group-sign [state]
   (let [class (if (= state :opened)
                 "group-opened-sign"
@@ -82,10 +85,10 @@
 
 
 
-(defn get-tests [path]
+(defn get-test [path]
   (->> inner-test-results
        (filter (comp (partial = path) :path))
-       (seq)))
+       (first)))
 
 (defn is-test? [path]
   (->> inner-test-results
@@ -94,6 +97,7 @@
        (seq)
        (boolean)))
 
+
 (defn section-head [level state path]
   [:div.section__head 
    {:on-click #(flip-func! path)}
@@ -101,9 +105,44 @@
    [heading level (peek path)]])
 
 
+(defn meta-text [meta-item]
+  [:div.text  (:data meta-item)])
+
+(defn meta-table [meta-item]
+  [:table 
+   (for [th (:columns meta-item [])]
+     ^{:key (gen-key th)} [:th th])
+   ])
+
+(defn meta-data-render [meta-data]
+  [:div {:key (gen-key meta-data)}
+   (for [meta-item meta-data]
+     (case (:type meta-item)
+       "text" ^{:key (gen-key meta-item)}[meta-text meta-item]
+       "table" ^{:key (gen-key meta-item)}[meta-table meta-item]
+       nil))])
+
+
+(defn fail-render [fail]
+  (let [fail-type (:type fail "")
+        fail-msg (:msg fail "")]
+    [:div (str "[" fail-type "] " fail-msg)]))
+
+
+(defn test-result-content [test-info]
+  (let [fails (:fails test-info [])
+        meta-data (:meta test-info [])]
+    [:div.inner-content 
+     (for [fail fails]
+       ^{:key (gen-key fail)}[fail-render fail])
+     [meta-data-render meta-data]]))
+
 (defn test-result [path]
-  (let [state (get-in @report-structure (conj path :state))] 
-    [section-head bottom-level state path]))
+  (let [state (get-in @report-structure (conj path :state))
+        test-info (get-test path)
+        status (:status test-info)] 
+    [:div [section-head bottom-level state path]
+     (when (= state :opened) [test-result-content test-info])]))
 
 
 (defn render-tree [tree level path]
@@ -112,10 +151,10 @@
     (let [v (get tree k)
           state (:state v)
           p (conj path k)]
-      [:div.section {:key (join "." p)} 
+      [:div.section {:key (gen-key p)} 
        (if (is-test? p)
-         [test-result p]
-         (list [section-head level state p]
+         ^{:key (gen-key p)}[test-result p]
+         (list ^{:key (gen-key p)}[section-head level state p]
                (if (= state :opened)
                  (render-tree v (inc level) p))))])))
 

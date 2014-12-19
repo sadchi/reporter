@@ -11,6 +11,8 @@ var data=[
                 "msg" : "CCCCC Error Assert Error"}
             ],
         "meta" : [
+            {"type" : "text",
+            "data" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel purus et neque elementum aliquet. Fusce in elementum turpis. Curabitur nec elementum libero. Donec sit amet arcu sit amet nisi elementum blandit a nec velit. Ut augue dui, viverra pulvinar ligula sed, blandit vulputate ante. Duis suscipit neque arcu, in consequat velit posuere vitae. Aliquam malesuada viverra risus non pharetra. Vivamus accumsan leo vel auctor placerat. Morbi interdum eget lacus at euismod. Nunc ornare semper congue. Nam nisi arcu, tempor nec nisi sed, vehicula efficitur massa. Mauris condimentum odio pulvinar pharetra faucibus. Duis hendrerit vitae augue a varius."},
             {"type" : "table",
             "name" : "The first test table",
             "columns" : ["C1", "C2", "C3","C4"],
@@ -18,9 +20,7 @@ var data=[
                 [1, 2, 3, 4, 5],
                 [0, 1, 0, 0, 0],
                 [0, 0, 1, 0, 0],
-                [0, 0, 0, 1, 5]]},
-            {"type" : "text",
-            "data" : "Sample text."}
+                [0, 0, 0, 1, 5]]}
         ]
     },
     {
