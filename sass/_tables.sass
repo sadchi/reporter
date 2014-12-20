@@ -1,0 +1,58 @@
+@import fonts
+
+$simple-table-border          : 1px solid grey !default
+$simple-table-margin          : 10px 0 0 0 !default
+$simple-table-odd-back        : grey !default
+
+$simple-table-th-padding      : .7em .8em !default
+$simple-table-th-back         : grey !default
+$simple-table-th-color        : white !default
+$simple-table-th-border-width : 0 1px !default
+$simple-table-th-border-style : solid !default
+$simple-table-th-border-color : grey !default
+
+$simple-table-td-padding      : .7em .8em !default
+$simple-table-td-border-width : 0 1px !default
+$simple-table-td-border-style : solid !default
+$simple-table-td-border-color : grey !default
+
+
+=border-spacing($param)
+  -webkit-border-horizontal-spacing : $param
+  -webkit-border-vertical-spacing : $param
+  border-spacing : $param
+
+.simple-table
+  width: 100%
+  margin: $simple-table-margin 
+  border: $simple-table-border
+  border-collapse : collapse
+  +border-spacing(0)
+
+.simple-table__th
+  +heading-font
+  font-size    : $font-size-3
+  font-weight  : normal
+  text-align   : left
+  padding      : $simple-table-th-padding
+  background   : $simple-table-th-back
+  color        : $simple-table-th-color
+  border-width : $simple-table-th-border-width
+  border-style : $simple-table-th-border-style
+  border-color : $simple-table-th-border-color
+
+.simple-table__td
+  padding : $simple-table-td-padding 
+  border-width : $simple-table-td-border-width 
+  border-style : $simple-table-td-border-style
+  border-color : $simple-table-td-border-color
+
+.simple-table--odd
+  background : $simple-table-odd-back
+
+.simple-table__title
+  +heading-font
+  font-size    : $font-size-3
+
+.simple-table--20
+  width : 20%

@@ -113,48 +113,58 @@
   (every? nil? coll))
 
 
-(defn render-table-row [coll]
+(defn render-table-row [odd coll]
   ^{:key (gen-key)} 
-  [:tr 
+  [:tr.simple-table__tr (when odd {:class "simple-table--odd"}) 
    (for [value coll]
-     ^{:key (gen-key)} [:td value])])
+     ^{:key (gen-key)} [:td.simple-table__td value])])
 
 (defn meta-table [meta-item]
-  [:table 
-   (for [th (:columns meta-item [])]
-     ^{:key (gen-key)} [:th th])
-   (loop [data (:data meta-item)
-          acc nil]
-     (if (is-table-empty? data)
-       (reverse acc)
-       (->> data
-            (map first)
-            (render-table-row)
-            (conj acc)
-            (recur (map next data)))))])
+  [:div.sub-section  [:div.simple-table__title (:name meta-item)]
+   [:table.simple-table 
+    (for [th (:columns meta-item [])]
+      ^{:key (gen-key)} [:th.simple-table__th th])
+    (loop [data (:data meta-item)
+           odd false
+           acc nil]
+      (if (is-table-empty? data)
+        (reverse acc)
+        (->> data
+             (map first)
+             (render-table-row odd)
+             (conj acc)
+             (recur (map next data) (not odd)))))]])
 
 (defn meta-data-render [meta-data]
   [:div {:key (gen-key)}
    (for [meta-item meta-data]
      (case (:type meta-item)
-       "text" ^{:key (gen-key)}[meta-text meta-item]
+       "text"  ^{:key (gen-key)}[meta-text meta-item]
        "table" ^{:key (gen-key)}[meta-table meta-item]
        nil))])
 
 
-(defn fail-render [fail]
-  (let [fail-type (:type fail "")
-        fail-msg (:msg fail "")]
-    [:div (str "[" fail-type "] " fail-msg)]))
+(defn fail-record-render [fail odd]
+  ^{:key (gen-key)}[:tr (when odd {:class "simple-table--odd"})
+   ^{:key (gen-key)}[:td.simple-table__td (:type fail) ]
+   ^{:key (gen-key)}[:td.simple-table__td (:msg fail)]])
 
+(defn fail-table [fails]
+  (when-not (empty? fails) 
+    [:div.sub-section [:div.simple-table__title "Assert errors list"]
+     [:table.simple-table
+      [:th.simple-table__th.simple-table--20 "Type"]
+      [:th.simple-table__th  "Message"]
+      (for [[idx fail] (map-indexed vector fails)
+            :let [odd (odd? idx)]]
+        ^{:key (gen-key)}[fail-record-render fail odd])]]))
 
 (defn test-result-content [test-info]
   (let [fails (:fails test-info [])
         meta-data (:meta test-info [])]
     [:div.inner-content 
-     (for [fail fails]
-       ^{:key (gen-key)}[fail-render fail])
-     [meta-data-render meta-data]]))
+     [meta-data-render meta-data]
+     [fail-table fails]]))
 
 (defn test-result [path]
   (let [state (get-in @report-structure (conj path :state))
@@ -189,9 +199,6 @@
 
 (defn main []
   [report-tree])
-
-
-
 
 
 (defn ^:export run []

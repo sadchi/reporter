@@ -9,6 +9,7 @@ $font-size-6    : 3rem
 $color-dark-1  : #1e1e1e
 $color-dark-2  : #202020
 $color-dark-3  : #232323
+$color-dark-4  : #4e4e4e
 
 $color-light-1 : #fefefe
 
@@ -22,7 +23,7 @@ $default-padding     : $unit
 $default-margin      : $unit
 $default-light-color : $color-light-1
 $default-font-light  : $default-light-color
-$default-font-dark   : #4e4e4e
+$default-font-dark   : $color-dark-4
 
 
 $backdrop-color       : #1e1e1e
@@ -45,7 +46,7 @@ $footer-padding : (1.5*$default-padding) $default-padding
 $section-padding     : 0
 $section-margin      : -1px 0
 $section-sub-padding : 0
-$section-sub-margin  : 0
+$section-sub-margin  : 1.5*$default-margin 0 0 0
 $section-back        : $default-light-color
 $section-back-alt    : rgba(0,0,0,.05)
 $section-border-width : 1px 0
@@ -66,4 +67,18 @@ $inner-content-magrin  : 0px
 $divider-border-width : 1px 
 $divider-border-color : transparent
 
+$simple-table-border          : 1px solid $color-dark-4 
+$simple-table-odd-back        : rgba($color-dark-4, .1)
+
+$simple-table-th-padding      : .7em .8em 
+$simple-table-th-back         : rgba($color-dark-4, .5) 
+$simple-table-th-color        : $default-light-color
+$simple-table-th-border-width : 0 1px 
+$simple-table-th-border-style : solid 
+$simple-table-th-border-color : $color-dark-4
+
+$simple-table-td-padding      : .7em .8em 
+$simple-table-td-border-width : 0 1px 
+$simple-table-td-border-style : solid 
+$simple-table-td-border-color : $color-dark-4 
 
