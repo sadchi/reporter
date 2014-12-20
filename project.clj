@@ -3,7 +3,8 @@
                  [org.clojure/clojurescript "0.0-2371"]
                  [reagent "0.4.3"]
                  [hiccup "1.0.5"]
-                 [cljs-uuid "0.0.4"]]
+                 [cljs-uuid "0.0.4"]
+                 [clj-stacktrace "0.2.7"]]
 
   :plugins      [[lein-cljsbuild "1.0.3"]
                  [lein-haml-sass "0.2.7-SNAPSHOT"]]
@@ -35,6 +36,12 @@
                                                 }
                                      }
                           }
+                 }
+
+  :repl-options {
+                 :caught clj-stacktrace.repl/pst+
+                 :host "0.0.0.0"
+                 :port 4001
                  }
 
   :aliases      {

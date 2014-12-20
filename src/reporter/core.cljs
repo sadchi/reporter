@@ -5,8 +5,16 @@
 
 (def inner-test-results (js->clj js/data :keywordize-keys true))
 (def report-structure (atom (sorted-map)))
-(def visibility-map  (atom {} ))
+(def extra-props  (atom {} ))
+(def zero-prop {:visibility :visible
+               :status 0
+               :count 0
+               :fail-count 0})
+
 (def bottom-level 4)
+(def status-rank {"UNDEFINED" 0
+                    "SUCCESS" 1
+                    "FAIL" 2})
 
 (defn add-sec! [coll path]
   (->> {:state :opened}
@@ -23,37 +31,32 @@
        (add-sec! coll p)
        (recur (pop p))))))
 
-(defn update-path [coll path func]
-  (->> {:count 0 :visibility :visible}
-       (get @coll path)
-       ( #(update-in % [:count] func))
-       (swap! coll assoc path)))
 
-(defn add-path [coll path]
-  (update-path coll path inc))
+(defn change-status [new-status-s old-status]
+  (->> new-status-s
+       (get status-rank)
+       (max old-status)))
 
-(defn rem-path [coll path]
-  (update-path coll path dec))
+(defn update-single! [acoll path attrib update-f]
+  (-> @acoll
+      (get path zero-prop)
+      (update-in [attrib] update-f)
+      (#(swap! acoll assoc path %))))
 
-(defn update-count [coll path func]
- (loop [p path]
-    (if (empty? p)
-      nil
-      (do
-       (update-path coll p func)
-       (recur (pop p))))))
-
-(defn inc-count-recur [coll path]
-  (update-count coll path inc))
-
-(defn dec-count-recur [coll path]
-  (update-count coll path dec))
+(defn update-up-to-root! [acoll path attrib update-f]
+  (loop [p path]
+    (update-single! acoll p attrib update-f)
+    (when-not (empty? p) (recur (pop p)))))
 
 
-(defn initial-process-data! [data tree vis-table]
+(defn initial-process-data! [data tree props]
   (doseq [item data]
-    (let [path (:path item)]
-      (inc-count-recur vis-table path)
+    (let [path (:path item)
+          status (:status item)]
+      (update-up-to-root! props path :count inc)
+      (update-up-to-root! props path :status (partial change-status status))
+      (when (= status "FAIL")
+        (update-up-to-root! props path :fail-count inc))
       (add-sec-recur! tree path))))
 
 
@@ -202,6 +205,6 @@
 
 
 (defn ^:export run []
-  (initial-process-data! inner-test-results report-structure visibility-map)
+  (initial-process-data! inner-test-results report-structure extra-props)
   (r/render-component [header] (.getElementById js/document "header"))
   (r/render-component [main] (.getElementById js/document "main")))

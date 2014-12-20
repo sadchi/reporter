@@ -1,6 +1,6 @@
 var data=[
     {
-        "status" : "SUCCESS",
+        "status" : "FAIL",
         "path" : [ "A", "A1", "A11", "T1"],
         "fails" : [
                 {"type" : "A.E.E",
