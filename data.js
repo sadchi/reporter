@@ -1,7 +1,7 @@
 var data=[
     {
         "status" : "FAIL",
-        "path" : [ "A", "A1", "A11", "T1"],
+        "path" : [ "A", "A1", "A11", "1.adf"],
         "fails" : [
                 {"type" : "A.E.E",
                 "msg" : "AAAAA Error Assert Error"},
@@ -21,31 +21,41 @@ var data=[
                 [0, 1, 0, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 0, 1, 5]]}
-        ]
+        ],
+        
+        "filename" : "1.adf"
+
     },
     {
         "status" : "SUCCESS",
-        "path" : [ "A", "A1", "A12"]
+        "path" : [ "A", "A1", "A11", "2.adf"],
+        "filename" : "2.adf"
     },
     {
         "status" : "SUCCESS",
-        "path" : [ "A", "A1", "A11", "T2"]
+        "path" : [ "A", "A1", "A11", "3.adf"],
+        "filename" : "3.adf"
     },
     {
         "status" : "FAIL",
-        "path" : [ "A", "A2"]
+        "path" : [ "A", "A2"],
+        "filename" : "4.adf"
     },
     {
         "status" : "SUCCESS",
-        "path" : [ "B", "B1"]
+        "path" : [ "B", "B1"],
+        "filename" : "1.adf"
     },
     {
         "status" : "FAIL",
-        "path" : [ "C", "C1", "C11"]
+        "path" : [ "C", "C1", "C11"],
+        "filename" : "1.adf"
     },
     {
         "status" : "SUCCESS",
-        "path" : [ "C", "C2", "C21"]
+        "path" : [ "C", "C2", "C21"],
+        "filename" : "multiple files",
+        "filecount" : 5000
     }
 
 ]

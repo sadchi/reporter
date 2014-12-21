@@ -228,6 +228,23 @@
 
 
 
+(defn calculate-test-quantity []
+  ((comp count set)
+   (loop [test-results inner-test-results
+          acc nil]
+     (let [others (rest test-results)
+           item (first test-results)
+           path (:path item)
+           filename (:filename item)]
+       (if (empty? item)
+         acc
+         (->> path
+              (#(if (= filename (peek %))
+                  (pop %)
+                  %))
+              (conj acc)
+              (recur others)))))))
+
 (defn overall-stat-content []
   [:div.inner-content
    [:table.simple-table.simple-table--no-borders
@@ -235,7 +252,7 @@
      [:td.simple-table__td.simple-table--no-borders.simple-table--10.simple-table--right
       "Total tests:"] 
      [:td.simple-table__td.simple-table--no-borders
-      "24"]]]])
+      (calculate-test-quantity)]]]])
 
 (defn overall-stat [acoll path]
   (let [state (get-in @acoll (conj path :state))]
