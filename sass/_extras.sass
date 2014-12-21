@@ -4,6 +4,10 @@
 $group-sign-color : black !default
 $group-sign-size  : 1rem !default
 
+$test-mark-color : black !default
+$test-mark-size  : 1rem !default
+
+
 $divider-border-width : 1px !default
 $divider-border-color : black !default
 
@@ -35,6 +39,13 @@ $divider-border-color : black !default
   width     : 1em
   @extend .icons
   @extend .icon-angle-down
+
+.test-mark-sign
+  font-size : $test-mark-size
+  color     : $test-mark-color
+  width     : 1em
+  @extend .icons
+  @extend .icon-blank
 
 .divider
   border-bottom: $divider-border-width solid $divider-border-color
