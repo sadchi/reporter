@@ -7,6 +7,8 @@
 (def report-structure (atom (sorted-map)))
 (def overview-section (atom {}))
 (def extra-props  (atom {} ))
+(def options-opened (atom true))
+
 (def zero-prop {:visibility :visible
                :status "UNDEFINED"
                :count 0
@@ -32,9 +34,9 @@
   (get rank-status-mapping rank))
 
 (defn add-sec! [coll path]
-  (->> {:state :opened }
+  (->> {:state :closed }
        (get-in @coll path)
-       (#(assoc % :state :opened))
+       (#(assoc % :state :closed))
        (swap! coll assoc-in path )))
 
 
@@ -280,18 +282,6 @@
      (when (= state :opened) [overall-stat-content])]))
 
 
-(defn report-tree []
-  [:div.container
-   [overall-stat overview-section ["Overview"]]
-   (render-tree @report-structure report-structure @extra-props 1 [])])
-
-
-(defn header []
-  [:div.header "FAILED"])
-
-
-(defn main []
-  [report-tree])
 
 (defn calculate-test-quantity []
   ((comp count set)
@@ -344,9 +334,44 @@
     (swap! overall-stats assoc :total-fails total-fails)
     (swap! overall-stats assoc :fail-rate (.toFixed fail-rate 2))))
 
+
+(defn report-status []
+  [:div
+   (let [main-sec (get @extra-props [])
+         status (:status main-sec)]
+     [:div.menu__label.menu--grow.heading.heading--h1 
+      (when (= status "FAIL") {:class "error"}) 
+      (str status "!") ])])
+
+(defn options-button []
+  (let [opened @options-opened
+        click-fn #(swap! options-opened not)
+        btn-class (if opened "menu__btn--pressed" "")]
+    [:div.menu__btn.icons.icon-menu
+     {:on-click click-fn :class btn-class}]))
+
+(defn menu []
+  [:div.menu
+   [:div.menu__header
+    [options-button]
+    [report-status]]
+   (when @options-opened [:div.menu__content])])
+
+
+
+ (defn report-tree []
+  [:div.container
+   [overall-stat overview-section ["Overview"]]
+   (render-tree @report-structure report-structure @extra-props 1 [])])
+
+
+(defn main []
+  [report-tree])
+
+
 (defn ^:export run []
   (initial-process-data! inner-test-results report-structure extra-props)
   (calculate-overall-stats)
   (add-sec! overview-section ["Overview"])
-  (r/render-component [header] (.getElementById js/document "header"))
+  (r/render-component [menu] (.getElementById js/document "header"))
   (r/render-component [main] (.getElementById js/document "main")))

@@ -37,7 +37,7 @@ var data=[
         "filename" : "3.adf"
     },
     {
-        "status" : "FAIL",
+        "status" : "SUCCESS",
         "path" : [ "A", "A2"],
         "filename" : "4.adf"
     },
@@ -47,12 +47,12 @@ var data=[
         "filename" : "1.adf"
     },
     {
-        "status" : "FAIL",
+        "status" : "SUCCESS",
         "path" : [ "C", "C1", "C11"],
         "filename" : "1.adf"
     },
     {
-        "status" : "SUCCESS",
+        "status" : "FAIL",
         "path" : [ "C", "C2", "C21"],
         "filecount" : 5000
     }
