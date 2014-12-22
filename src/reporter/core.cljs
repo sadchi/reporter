@@ -15,6 +15,7 @@
 (def bottom-level 4)
 (def highest-level 1)
 
+(def overall-stats (atom {}))
 
 (def status-rank-mapping {"UNDEFINED" 0
                     "SUCCESS" 1
@@ -228,31 +229,45 @@
 
 
 
-(defn calculate-test-quantity []
-  ((comp count set)
-   (loop [test-results inner-test-results
-          acc nil]
-     (let [others (rest test-results)
-           item (first test-results)
-           path (:path item)
-           filename (:filename item)]
-       (if (empty? item)
-         acc
-         (->> path
-              (#(if (= filename (peek %))
-                  (pop %)
-                  %))
-              (conj acc)
-              (recur others)))))))
+
 
 (defn overall-stat-content []
-  [:div.inner-content
+  (let [stats @overall-stats
+        {:keys [total-tests total-files total-combinations total-fails fail-rate]} stats
+        ]
+   [:div.inner-content
    [:table.simple-table.simple-table--no-borders
     [:tr
-     [:td.simple-table__td.simple-table--no-borders.simple-table--10.simple-table--right
+     [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
       "Total tests:"] 
      [:td.simple-table__td.simple-table--no-borders
-      (calculate-test-quantity)]]]])
+      total-tests]]
+    
+    [:tr.simple-table--odd
+     [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
+      "Total files:"] 
+     [:td.simple-table__td.simple-table--no-borders
+      total-files]]
+    
+    [:tr
+     [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
+      "Total combinations:"] 
+     [:td.simple-table__td.simple-table--no-borders
+      total-combinations]]
+
+    [:tr.simple-table--odd.error
+     [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
+      "Total fails:"] 
+     [:td.simple-table__td.simple-table--no-borders
+      total-fails]]
+
+    [:tr
+     [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
+      "Fail rate:"] 
+     [:td.simple-table__td.simple-table--no-borders
+      (str fail-rate "%")]]
+    
+    ]]))
 
 (defn overall-stat [acoll path]
   (let [state (get-in @acoll (conj path :state))]
@@ -278,11 +293,60 @@
 (defn main []
   [report-tree])
 
+(defn calculate-test-quantity []
+  ((comp count set)
+   (loop [test-results inner-test-results
+          acc nil]
+     (let [others (rest test-results)
+           item (first test-results)
+           path (:path item)
+           filename (:filename item)]
+       (if (empty? item)
+         acc
+         (->> path
+              (#(if (= filename (peek %))
+                  (pop %)
+                  %))
+              (conj acc)
+              (recur others)))))))
+
+(defn calculate-files-quantity []
+  (+ 
+   (->> inner-test-results
+        (map :filename)
+        (filter (complement nil?))
+        (set)
+        (count))
+   (->> inner-test-results
+        (map :filecount)
+        (filter (complement nil?))
+        (reduce +))))
+
+(defn calculate-combinations []
+  (count inner-test-results))
+
+(defn calculate-fails []
+  (->> inner-test-results
+       (map :status)
+       (filter (partial = "FAIL"))
+       (count)))
 
 
+(defn calculate-overall-stats []
+  (let [total-tests (calculate-test-quantity)
+        total-files (calculate-files-quantity)
+        total-combinations (calculate-combinations)
+        total-fails (calculate-fails) 
+        fail-rate (* 100 (/ total-fails total-combinations))]
+    (swap! overall-stats assoc :total-tests total-tests)
+    (swap! overall-stats assoc :total-files total-files)
+    (swap! overall-stats assoc :total-combinations total-combinations)
+    (swap! overall-stats assoc :total-fails total-fails)
+    (swap! overall-stats assoc :fail-rate (.toFixed fail-rate 2))))
 
 (defn ^:export run []
   (initial-process-data! inner-test-results report-structure extra-props)
+  (calculate-overall-stats)
   (add-sec! overview-section ["Overview"])
   (r/render-component [header] (.getElementById js/document "header"))
   (r/render-component [main] (.getElementById js/document "main")))

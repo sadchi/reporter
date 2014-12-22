@@ -54,7 +54,6 @@ var data=[
     {
         "status" : "SUCCESS",
         "path" : [ "C", "C2", "C21"],
-        "filename" : "multiple files",
         "filecount" : 5000
     }
 
