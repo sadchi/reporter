@@ -8,6 +8,7 @@
 (def overview-section (atom {}))
 (def extra-props  (atom {} ))
 (def options-opened (atom true))
+(def options (atom {:pass-fail-filter :both}))
 
 (def zero-prop {:visibility :visible
                :status "UNDEFINED"
@@ -350,17 +351,50 @@
     [:div.menu__btn.icons.icon-menu
      {:on-click click-fn :class btn-class}]))
 
+
+
+(defn radio-button [button-key text state-to-update update-path]
+  (let [active-button (get-in @state-to-update update-path)
+        update-func #(swap! state-to-update assoc-in update-path button-key)
+        btn-class (if (= button-key active-button) 
+                    "radio-button--active" 
+                    "radio-button--inactive")]
+    [:div.radio-button {:on-click update-func :class btn-class} text]))
+ 
+
+(defn radio-buttons-group [{:keys [group-name
+                                   values
+                                   state-to-update 
+                                   update-path]}]
+  [:div.radio-buttons-group
+   [:div.radio-buttons-group__header group-name]
+   (for [k (keys values)]
+     ^{:key (gen-key)} [radio-button k (get values k) state-to-update update-path])])
+
+
+
+(defn update-props-new-options [props options]
+  )
+
 (defn menu []
   [:div.menu
    [:div.menu__header
     [options-button]
     [report-status]]
-   (when @options-opened [:div.menu__content])])
+   (when @options-opened 
+     [:div.menu__content
+      [radio-buttons-group {:group-name "Display options"
+                            :values {:failsonly "Only failed tests"
+                                     :passonly "Only successful tests"
+                                     :both "Both"}
+                            :state-to-update options
+                            :update-path [:pass-fail-filter]}]])])
 
 
 
  (defn report-tree []
   [:div.container
+   (update-props-new-options extra-props options)
    [overall-stat overview-section ["Overview"]]
    (render-tree @report-structure report-structure @extra-props 1 [])])
 

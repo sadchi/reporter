@@ -30,7 +30,7 @@
                                                 :preamble ["reagent/react.js"]
                                                 :output-to "target/reporter.js"
                                                 :output-dir "target/out"
-                                                :optimizations :advanced 
+                                                :optimizations :simple 
                                                 :source-map "target/reporter.js.map"
                                                 }
                                      }
