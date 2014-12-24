@@ -176,7 +176,7 @@
 (defn fail-record-render [fail odd]
   ^{:key (gen-key)}[:tr (when odd {:class "simple-table--odd"})
    ^{:key (gen-key)}[:td.simple-table__td (:type fail) ]
-   ^{:key (gen-key)}[:td.simple-table__td (:msg fail)]])
+   ^{:key (gen-key)}[:td.simple-table__td (:message fail)]])
 
 (defn fail-table [fails]
   (when-not (empty? fails) 
