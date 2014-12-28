@@ -4,11 +4,11 @@ var data=[
         "path" : [ "C", "A1", "A11", "1.adf"],
         "fails" : [
                 {"type" : "A.E.E",
-                "msg" : "AAAAA Error Assert Error"},
+                "message" : "AAAAA Error Assert Error"},
                 {"type" : "B.E.E",
-                "msg" : "BBBBB Error Assert Error"},
+                "message" : "BBBBB Error Assert Error"},
                 {"type" : "C.E.E",
-                "msg" : "CCCCC Error Assert Error"}
+                "message" : "CCCCC Error Assert Error"}
             ],
         "meta" : [
             {"type" : "text",

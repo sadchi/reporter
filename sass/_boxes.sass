@@ -28,6 +28,10 @@ $section-border-width : 1px 0px !default
 $section-border-style : solid !default
 $section-border-color : black !default
 
+$section-section-border-width : 5px !default
+$section-section-border-color : grey !default 
+
+
 $section-head-padding : 10px !default
 
 $inner-content-padding : 0px 10px !default
@@ -73,6 +77,10 @@ $inner-content-magrin  : 0px !default
   border-width : $section-border-width
   border-style : $section-border-style
   border-color : $section-border-color
+
+.section > .section
+  border-left : $section-section-border-width solid $section-section-border-color 
+
 
 .section__head
   +flexbox

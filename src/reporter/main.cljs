@@ -16,9 +16,8 @@
        (let [state-key (conj [] level0)
              state (get state-map state-key)
              id (:id state)
-             tree-node (get report-structure level0)
-             ]
-         ^{:key id} [tree/process-node tree-node state-map (conj [] level0)]))])
+             tree-node (get report-structure level0)]
+         ^{:key id} [tree/process-node tree-node state-map inner-data (conj [] level0)]))])
 
 (defn header []
   [:div "HEADER"])
