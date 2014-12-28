@@ -5,10 +5,15 @@
     %link(rel='stylesheet' type='text/css' href='css/report.css')
     %script(src='data.js')
   %body
-    %div#header
-    %div#main
-    %div.footer
-      Footer
+    %div.main-container
+      %div#header
+      %div#main
+        .loader-box
+          .loader
+            .loader__spinner
+            .loader__text Report generation ...
+            .loader__text ... Please, wait.
+      %div#footer
     %script(src='target/reporter.js')
-    %script reporter.core.run();
+    %script reporter.main.start();
 
