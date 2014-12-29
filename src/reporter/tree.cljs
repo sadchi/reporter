@@ -4,7 +4,7 @@
             [reporter.headings :as h]))
 
 
-(def ^:private non-terminal-node-level 3)
+(def ^:private non-terminal-node-level 2)
 
 
 (defn process-node [tree-node state-map test-results path]
