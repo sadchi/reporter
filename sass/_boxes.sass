@@ -1,6 +1,8 @@
 @import shadows
 @import flexbox
 
+$default-radius : 3px !default
+
 $backdrop-color       : black !default
 
 $main-container-back   : white !default
@@ -25,6 +27,10 @@ $section-back         : white !default
 $section-border-width : 1px 0px !default
 $section-border-style : solid !default
 $section-border-color : black !default
+
+$section-section-border-width : 5px !default
+$section-section-border-color : grey !default 
+
 
 $section-head-padding : 10px !default
 
@@ -71,6 +77,10 @@ $inner-content-magrin  : 0px !default
   border-width : $section-border-width
   border-style : $section-border-style
   border-color : $section-border-color
+
+.section > .section
+  border-left : $section-section-border-width solid $section-section-border-color 
+
 
 .section__head
   +flexbox
