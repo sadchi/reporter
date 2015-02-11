@@ -30,12 +30,13 @@
 
 (defn section-head [{:keys [level status path state extra]}]
   (fn []
-    (let [opened (state/opened? state)]
-      [:div.section__head
-       {:on-click #(state/update-it! state state/flip-opened)}
-       (group-sign opened)
-       (heading level (path/name-path-node (peek path)) (t-res-tools/status->class status))
-       extra])))
+    (let [opened (state/opened? state)
+          id (state/id state)]
+      ^{:key id} [:div.section__head
+                  {:on-click #(state/update-it! state state/flip-opened)}
+                  (group-sign opened)
+                  (heading level (path/name-path-node (peek path)) (t-res-tools/status->class status))
+                  extra])))
 
 
 

@@ -16,6 +16,7 @@
   (fn []
     (let [tab @active-tab
           items (get tabs tab)
+          _ (tools/log-obj "main items " items)
           body [:div.container]]
       (into body (for [item items] [item])))))
 
@@ -54,9 +55,7 @@
 
 
         get-status (fn [state-map k]
-                     (-> (get state-map k [:root (state/mk-state)])
-                         (second)
-                         (state/reduce-statuses t/worse-status "SUCCESS")))
+                     (t/get-status (get state-map k)))
 
 
         full-inner-data (js->clj js/data :keywordize-keys true)
@@ -65,29 +64,27 @@
         stat-tests (filter stat-test? full-inner-data)
 
         func-report-structure (struct-bldr func-tests)
+        ;_ (tools/log-obj "func-report-structure " func-report-structure)
         stat-report-structure (struct-bldr stat-tests)
-
+        ;_ (tools/log-obj "stat-report-structure " stat-report-structure)
 
         func-report-structure (init-p/collapse-poor-branches func-report-structure)
-        _ (tools/log-obj "func-report-structure " func-report-structure)
+        ;_ (tools/log-obj "func-report-structure " func-report-structure)
         stat-report-structure (init-p/collapse-poor-branches stat-report-structure)
+        ;_ (tools/log-obj "stat-report-structure " stat-report-structure)
 
-        func-state-map (state-bldr func-tests func-report-structure)
-        _ (tools/log-obj "func-state-map " func-state-map)
-        stat-state-map (state-bldr stat-tests stat-report-structure)
-
-
-        func-root (get func-state-map [])
-        stat-root (get stat-state-map [])
-
-        func-root-item (last func-root)
-        stat-root-item (last stat-root)
+        func-state-map (state-builder func-tests func-report-structure)
+        ;_ (tools/log-obj "func-state-map " func-state-map)
+        stat-state-map (state-builder stat-tests stat-report-structure)
+        ;_ (tools/log-obj "func-state-map " stat-state-map)
 
         func-status (get-status func-state-map [])
+        ;_ (tools/log-obj "func-status " func-status)
         stat-status (get-status stat-state-map [])
-
+        ;_ (tools/log-obj "stat-status " stat-status)
 
         common-status (t/worse-status func-status stat-status)
+        ;_ (tools/log-obj "common-status " common-status)
 
         status-text (ui/text {:id            (state/gen-id)
                               :text          (gstring/format "%s: " common-status)
@@ -145,8 +142,10 @@
     (def s-state stat-state-map)
 
     (r/render-component [main {:active-tab active-tab
-                               :tabs       {:func [overall-func-sec func-root-item]
-                                            :stat [overall-stat-sec stat-root-item]}}] (.getElementById js/document "main"))
+                               :tabs       {:func [overall-func-sec (tree/tree {:structure func-report-structure
+                                                                                :state-map func-state-map
+                                                                                :test-results func-tests})]
+                                            :stat [overall-stat-sec]}}] (.getElementById js/document "main"))
     (r/render-component [navbar status-label func-tab stat-tab filler opts-btn] (.getElementById js/document "header"))
     (r/render-component [footer] (.getElementById js/document "footer"))
     ))

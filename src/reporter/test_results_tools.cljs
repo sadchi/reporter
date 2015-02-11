@@ -39,3 +39,8 @@
 
 (defn get-status [state]
   (state/reduce-statuses state worse-status "SUCCESS"))
+
+(defn get-test-info [test-results path]
+  (->> test-results
+       (filter (comp (partial = path) :path))
+       (first)))

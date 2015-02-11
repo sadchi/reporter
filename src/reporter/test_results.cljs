@@ -96,8 +96,10 @@
   (fn []
     (let [id (state/id state)
           status (get-status state)
-          opened (state/opened? state)]
-      [:div {:key id}
+          opened (state/opened? state)
+          level (dec (count path))
+          level-sec-class (str "section--lvl-" level)]
+      [:div {:key id :class level-sec-class}
        [h/section-head {:level  test-heading-level
                         :opened opened
                         :status status
