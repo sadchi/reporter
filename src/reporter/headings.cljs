@@ -2,6 +2,7 @@
   (:require [reporter.state :as state]
             [reporter.path :as path]
             [reporter.tools :as tools]
+            [reporter.test-results-tools :as t-res-tools]
             [clojure.string :refer [join]]))
 
 
@@ -27,14 +28,14 @@
 
 
 
-(defn section-head [{:keys [level opened status path state extra]}]
+(defn section-head [{:keys [level status path state extra]}]
   (fn []
-    @state
-    [:div.section__head
-     {:on-click #(state/update-it! state state/flip-opened)}
-     [group-sign opened]
-     [heading level (path/name-path-node (peek path)) (when (= status "FAIL") "error")]
-     extra]))
+    (let [opened (state/opened? state)]
+      [:div.section__head
+       {:on-click #(state/update-it! state state/flip-opened)}
+       (group-sign opened)
+       (heading level (path/name-path-node (peek path)) (t-res-tools/status->class status))
+       extra])))
 
 
 

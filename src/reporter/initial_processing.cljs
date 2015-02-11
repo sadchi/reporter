@@ -59,20 +59,13 @@
             f (fn [s x]
                 (when x (state/update-it! x (partial state/inc-status s))))]
         (f-tree/update-up-root-alt state-map path (partial f status))))
+    (state/update-it! (get state-map []) state/set-opened)
     state-map))
 
 
 
-(defn mk-state-map [{:keys [coll path-field status-field structure]}]
-  (let [add-elem-fn (fn [x]
-                      (let [[type path state] x]
-                        (condp = type
-                          :root (conj x (partial tree/root))
-                          :leaf (conj x #(t-res/test-result-alt state path (first (filter (fn [x] (= (get x path-field) (path/flatten-path path))) coll))))
-                          :node (conj x [partial tree/node state path]))))
-
-
-        vec->map (fn [coll x]
+(defn mk-state-map [{:keys [test-results path-field status-field structure]}]
+  (let [vec->map (fn [coll x]
                    (let [[type path state] x]
                      (assoc coll path [type state])))
 
@@ -81,36 +74,17 @@
                       (let [[k v] x]
                         (assoc coll (path/flatten-path k) v)))
 
-        child? (fn [parent x]
-                 (let [[k _] x]
-                   (if (seq k)
-                     (= parent (pop k))
-                     false)))
-
-        get-fns (fn [coll x]
-                  (let [[_ v] x
-                        [_ _ f] v]
-                    (conj coll f)))
 
         path->str (fn [x]
                     (join "." (path/flatten-path x)))
 
-        update-fns (fn [coll x]
-                     (let [item (get coll x)
-                           [type state f] item]
-                       (condp = type
-                         :leaf coll
-                         (let [children (filter (partial child? x) coll)
-                               children-sorted (sort-by path->str children)
-                               f-list (reduce get-fns [] children-sorted)
-                               new-f (fn [] (f f-list))]
-                           (assoc coll x [type state new-f])))))
 
         process-leaf (fn [coll x]
                        (let [[k v] x
                              [type state] v]
                          (if (= type :leaf)
-                           (assoc coll k [type state (t-res/test-result-alt state k (first (filter (fn [x] (= (get x path-field) (path/flatten-path k))) coll)))])
+                           (let [test-info (first (filter (fn [x] (= (get x path-field) (path/flatten-path k))) test-results))]
+                             (assoc coll k [type state (t-res/test-result-alt state k test-info)]))
                            (assoc coll k v))))
 
         process-node (fn [coll x]
@@ -123,37 +97,43 @@
                                  children-sorted (sort-by path->str children-keys)
                                  sub-item-variants (map #(get coll %) children-sorted)
                                  sub-items (map last sub-item-variants)
-                                 _ (t/log-obj "coll " coll)
-                                 _ (t/log-obj "path " x)
-                                 _ (t/log-obj "children " children)
-                                 _ (t/log-obj "children-keys " children-sorted)
-                                 _ (t/log-obj "sub-item-variants " sub-item-variants)
-                                 _ (t/log-obj "sub-items " sub-items)]
+                                 ;_ (t/log-obj "coll " coll)
+                                 ;_ (t/log-obj "path " x)
+                                 ;_ (t/log-obj "children-keys " (map path->str children))
+                                 ;_ (t/log-obj "children-sorted " (map path->str children-sorted))
+                                 ;_ (t/log-obj "sub-item-variants " sub-item-variants)
+                                 ;_ (t/log-obj "sub-items " sub-items)
+                                 ]
                              (assoc coll x [type state (tree/node state x sub-items)]))
                            coll)))
 
         process-root (fn [coll]
+                       (t/log "\nProcess root")
                        (let [root-item (get coll [])
                              [type state] root-item
                              children (keys structure)
-                             sub-items (for [child-key children]
-                                         (get (get coll (conj [] child-key)) 2))]
+                             children-sorted (sort-by path->str children)
+                             ;_ (t/log-obj "children-keys " (map path->str children))
+                             ;_ (t/log-obj "children-sorted " (map path->str children-sorted))
+                             sub-items (for [child-key children-sorted]
+                                         (last (get coll (conj [] child-key))))]
                          (assoc coll [] [type state (tree/root sub-items)])))
 
         branches-comp (mk-all-paths-variants structure)
         branches-w-state (map #(conj % (state/mk-state)) branches-comp)
         map-type-state (reduce vec->map {} branches-w-state)
         map-type-state-leafs (reduce process-leaf {} map-type-state)
-        _ (t/log-obj "map-type-state-leafs " map-type-state-leafs)
+        ;_ (t/log-obj "map-type-state-leafs " map-type-state-leafs)
         down->top-paths (sort-by #(count (path/flatten-path %)) > (keys map-type-state-leafs))
-        _ (t/log-obj "down->top-paths " down->top-paths)
+        ;_ (t/log-obj "down->top-paths " down->top-paths)
         map-type-state-leafs-nodes (reduce process-node map-type-state-leafs down->top-paths)
-        _ (t/log-obj "map-type-state-leafs-nodes " map-type-state-leafs-nodes)
+        ;_ (t/log-obj "map-type-state-leafs-nodes " map-type-state-leafs-nodes)
         state-map-before-flatten (process-root map-type-state-leafs-nodes)
-        _ (t/log-obj "state-map-before-flatten " state-map-before-flatten)
+        ;_ (t/log-obj "state-map-before-flatten " state-map-before-flatten)
         state-map (reduce mk-flat-key {} state-map-before-flatten)
-        _ (t/log-obj "state-map " state-map)]
-    (doseq [item coll]
+        ;_ (t/log-obj "state-map " state-map)
+        ]
+    (doseq [item test-results]
       (let [path (get item path-field)
             status (get item status-field)
             f (fn [s x]

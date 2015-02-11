@@ -77,3 +77,42 @@
         (into body (for [item sub-items] [item]))
         body))))
 
+(defn- tree-node [{:keys [path structure state-map test-results]}]
+  (let [flat-path (path/flatten-path path)
+        state (get state-map flat-path)
+        sub-tree (get-in structure path)]
+    (if (= sub-tree :test)
+      (let [test-info (t-res-t/get-test-info test-results flat-path)]
+        [t-res/test-result-alt state path test-info])
+      (let [opened (state/opened? state)
+            status (t-res-t/get-status state)
+            total (state/get-count state)
+            fails (state/get-count state "FAIL")
+            errors (state/get-count state "ERROR")
+            level (dec (count path))
+            level-sec-class (str "section--lvl-" level)
+            id (state/id state)]
+        ^{:key id} [:div.section {:class level-sec-class}
+                    (list
+                      [h/section-head {:level  non-terminal-node-level
+                                       :opened opened
+                                       :status status
+                                       :path   path
+                                       :state  state
+                                       :extra  (h/heading-fails-stat (+ fails errors) total)}]
+
+                      (when opened
+                        (for [k (sorted-keys-path-aware tree-node)]
+                          (tree-node {:path         (conj path k)
+                                      :structure    structure
+                                      :state-map    state-map
+                                      :test-results test-results}))))]))))
+
+(defn tree [{:keys [structure state-map test-results]}]
+  [:div
+   (for [k (keys structure)]
+     (tree-node {:path         [k]
+                 :structure    structure
+                 :state-map    state-map
+                 :test-results test-results}))])
+

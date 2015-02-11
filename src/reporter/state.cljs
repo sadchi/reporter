@@ -54,4 +54,6 @@
 (defn flip-opened [state]
   (update-in state [:opened?] not))
 
+(defn set-opened [state]
+  (update-in state [:opened?] (fn [_] true)))
 
