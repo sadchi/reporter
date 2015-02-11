@@ -1,0 +1,59 @@
+@import flexbox
+@import fonts
+
+$navbar-dynamic-item-width  : 20px !default
+$navbar-dynamic-item-height : 20px !default
+$navbar-padding             : 0 $navbar-dynamic-item-width 0 0 !default
+$navbar-item-padding        : 0 !default
+$navbar-back                : black !default
+$navbar-color               : white !default
+$navbar-font-size           : 2rem !default
+$navbar-hover-back          : rgba(#ffffff, 0.05) !default
+$navbar-item-active-color   : white !default
+$navbar-item-active-back    : black !default
+$navbar-item-inactive-color : grey !default
+$navbar-item-inactive-back  : black !default
+
+
+.navbar
+  +flexbox
+  +heading-font
+  font-size  : $navbar-font-size
+  position   : relative
+  padding    : $navbar-padding
+  background : $navbar-back
+  color      : $navbar-color
+
+
+.navbar__item
+  +flexbox
+  position : relative
+  padding  : $navbar-item-padding
+
+.navbar__item--grow
+  +flex-grow(1)
+
+.navbar__dyn-item
+  position   : absolute
+  top        : 50%
+  margin-top : $navbar-dynamic-item-height/2
+  right      : $navbar-dynamic-item-width
+
+.navbar__item--hoverable
+  &:hover:before
+    content    : ""
+    position   : absolute
+    top        : 0
+    left       : 0
+    bottom     : 0
+    right      : 0
+    background : $navbar-hover-back
+
+.navbar__item--active
+  color      : $navbar-item-active-color
+  background : $navbar-item-active-back
+
+.navbar__item--inactive
+  color      : $navbar-item-inactive-color
+  background : $navbar-item-inactive-back
+

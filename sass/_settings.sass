@@ -1,4 +1,7 @@
+@import colors
+
 $font-size-base : 14px
+$font-size-0    : 0.6rem
 $font-size-1    : 1rem
 $font-size-2    : 1.25rem
 $font-size-3    : 1.5rem
@@ -40,9 +43,10 @@ $header-back-light : #232323
 $header-color   : $default-font-light
 $header-padding : (1.5*$default-padding) $default-padding
 
-$footer-back       : $color-dark-2
-$footer-color      : $default-font-light
-$footer-padding : (1.5*$default-padding) $default-padding
+$footer-back      : $color-mine-shaft
+$footer-color     : $color-tundora
+$footer-padding   : (1.5*$default-padding) $default-padding
+$footer-font-size : $font-size-0
 
 $section-padding     : 0
 $section-margin      : -1px 0
@@ -56,6 +60,7 @@ $section-border-color : rgba(#000000, .2)
 
 $section-section-border-width : 10px 
 $section-section-border-color : rgba($color-dark-4, .1)
+$section-lvl-step-size : 20px
 
 
 $section-head-padding : ($default-padding * 1.5) $default-padding $default-padding $default-padding
@@ -65,8 +70,10 @@ $heading-padding       : 0 $default-padding
 $group-sign-size  : $font-size-2
 $group-sign-color : $default-font-dark 
 
-$test-mark-color : rgba($default-font-dark, .3)
+$test-mark-color : #cccccc // rgba($default-font-dark, .3)
 $test-mark-size  : .8*$font-size-1
+
+$cog-sign-size  : $font-size-2
 
 $inner-content-padding : 0px $default-padding 2*$default-padding $default-padding
 $inner-content-magrin  : 0px 
@@ -92,12 +99,31 @@ $simple-table-td-border-color : $color-dark-4
 
 $menu-back            : $color-dark-2
 $menu-color           : $default-light-color
-$menu-padding         : 0
+$menu-active-back     : #EBEBEB
+$menu-bottom-border   : 0 solid transparent 
+
+$menu-padding         : 0 $default-padding
 $menu-btn-padding     : $default-padding
 $menu-label-padding   : $default-padding
 $menu-content-back    : #EBEBEB
 $menu-content-color   : $default-font-dark
 $menu-content-padding : $default-padding
+
+
+$navbar-dynamic-item-width  : 20px
+$navbar-dynamic-item-height : 20px
+$navbar-padding             : 0
+$navbar-item-padding        : $default-padding
+$navbar-back                : $color-mine-shaft
+$navbar-color               : $default-light-color
+$navbar-font-size           : $font-size-3
+$navbar-hover-back          : rgba(#ffffff, 0.05)
+$navbar-item-active-color   : $color-light-1
+$navbar-item-active-back    : $color-cod-gray 
+$navbar-item-inactive-color : $color-light-1
+$navbar-item-inactive-back  : $color-mine-shaft
+
+
 
 $radio-group-padding        : $default-padding
 $radio-group-header-size    : $font-size-2 

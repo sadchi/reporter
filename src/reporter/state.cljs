@@ -1,37 +1,57 @@
 (ns reporter.state
   (:require [reagent.core :as r]))
 
-(def ^:private id (atom 0))
+(def ^:private id-seq (atom 0))
 
-(defn default-state []
-  {:id (swap! id inc) 
-   :state (r/atom {
-                   :opened false
-                   :visible true
-                   :reason nil
-                   :count 0
-                   :fail-count 0
-                   :status "SUCCESS"})})
+(defn gen-id []
+  (swap! id-seq inc))
+
+(defprotocol State
+  "Operations for a state"
+  (id [this])
+  (opened? [this])
+  (visible? [this])
+  (get-count [this] [this status])
+  (reduce-statuses [this f init] "Reduces with f not 0 statuses")
+  (update-it! [this f] "Update state atom with a function"))
 
 
-(defn get-state-atom [x]
-  (get x :state))
+(extend-type reagent.ratom/RAtom
+  State
+  (id [state] (:id @state))
 
-(defn inc-count [state]
-  (swap! (get-state-atom state) update-in [:count] inc))
+  (opened? [state] (:opened? @state))
 
-(defn dec-count [state]
-  (swap! (get-state-atom state) update-in [:count] dec))
+  (visible? [state] (:visible? @state))
 
-(defn inc-fail-count [state]
-  (swap! (get-state-atom state) update-in [:fail-count] inc))
+  (get-count [state] (reduce + (vals (:statuses @state))))
 
-(defn dec-fail-count [state]
-  (swap! (get-state-atom state) update-in [:fail-count] dec))
+  (get-count [state status] (get-in @state [:statuses status] 0))
 
-(defn apply-fail-status [state]
-  (swap! (get-state-atom state) update-in [:status] #(identity "FAIL")))
+  (reduce-statuses [state f init]
+    (->> (:statuses @state)
+         (filter (fn [x] (let [[k v] x] (pos? v))))
+         (map first)
+         (reduce f init)))
+
+  (update-it! [state f] (swap! state f)))
+
+(defn mk-state []
+  (r/atom {:id       (gen-id)
+           :statuses {}
+           :reasons  {}
+           :visible? true
+           :opened?  false}))
+
+(defn- inc-nilable [x]
+  (if x
+    (inc x)
+    1))
+
+(defn inc-status [status state]
+  (update-in state [:statuses status] inc-nilable))
 
 (defn flip-opened [state]
-  (swap! (get-state-atom state) update-in [:opened] not))
+  (update-in state [:opened?] not))
+
 

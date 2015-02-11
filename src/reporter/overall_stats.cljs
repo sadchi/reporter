@@ -3,7 +3,7 @@
             [reporter.headings :as h]))
 
 
-(def overview-section-level 2)
+(def overview-section-level 4)
 
 (defn calculate-test-quantity [test-results]
   ((comp count set)
@@ -37,10 +37,10 @@
 (defn calculate-combinations [test-results]
   (count test-results))
 
-(defn calculate-fails [test-results]
+(defn calculate-issues [test-results]
   (->> test-results
        (map :status)
-       (filter (partial = "FAIL"))
+       (filter (partial #{"FAIL" "ERROR"}))
        (count)))
 
 
@@ -49,16 +49,16 @@
   (let [total-tests (calculate-test-quantity test-results)
         total-files (calculate-files-quantity test-results)
         total-combinations (calculate-combinations test-results)
-        total-fails (calculate-fails test-results) 
-        fail-rate (* 100 (/ total-fails total-combinations))]
+        total-issues (calculate-issues test-results)
+        fail-rate (* 100 (/ total-issues total-combinations))]
     {:total-tests total-tests
      :total-files total-files
      :total-combinations total-combinations
-     :total-fails total-fails
+     :total-issues total-issues
      :fail-rate (.toFixed fail-rate 2)}))
 
 (defn overview-content [overall-stats]
-  (let [{:keys [total-tests total-files total-combinations total-fails fail-rate]} overall-stats]
+  (let [{:keys [total-tests total-files total-combinations total-issues fail-rate]} overall-stats]
    [:div.inner-content
    [:table.simple-table.simple-table--no-borders
     [:tr
@@ -81,9 +81,9 @@
 
     [:tr.simple-table--odd.error
      [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
-      "Total fails:"] 
+      "Total issues:"]
      [:td.simple-table__td.simple-table--no-borders
-      total-fails]]
+      total-issues]]
 
     [:tr
      [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
@@ -95,8 +95,7 @@
 
 (defn overview-section [overall-stats state-map path]
   (let [state (get state-map path)
-        state-atom-value (deref (state/get-state-atom state))
-        opened (:opened state-atom-value)]
+        opened (state/opened? state)]
     [:div.section
      [h/section-head {:level overview-section-level
                     :opened opened
@@ -105,4 +104,14 @@
                     :path path}]
      (when opened [overview-content overall-stats])]))
 
+
+(defn overview-section-alt [overall-stats state]
+  (let [opened (state/opened? state)]
+    [:div.section
+     [h/section-head {:level overview-section-level
+                      :opened opened
+                      :status "UNDEFINED"
+                      :state state
+                      :path ["Overview"]}]
+     (when opened [overview-content overall-stats])]))
 

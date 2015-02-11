@@ -15,9 +15,10 @@ $header-back-light : grey !default
 $header-color      : white !default
 $header-padding    : 10px !default
 
-$footer-back    : black !default
-$footer-color   : white !default
-$footer-padding : 10px !default
+$footer-back      : black !default
+$footer-color     : white !default
+$footer-padding   : 10px !default
+$footer-font-size : 0.6rem !default
 
 $section-padding      : 10px !default
 $section-margin       : 0px !default
@@ -28,8 +29,8 @@ $section-border-width : 1px 0px !default
 $section-border-style : solid !default
 $section-border-color : black !default
 
-$section-section-border-width : 5px !default
-$section-section-border-color : grey !default 
+$section-section-padding-left : 10px !default  
+$section-lvl-step-size : 20px    !default
 
 
 $section-head-padding : 10px !default
@@ -67,8 +68,8 @@ $inner-content-magrin  : 0px !default
   margin  : 0
   padding : $footer-padding
   background : $footer-back
+  font-size  : $footer-font-size
   color      : $footer-color
-  text-align : center
 
 .section
   margin     : $section-margin
@@ -78,8 +79,27 @@ $inner-content-magrin  : 0px !default
   border-style : $section-border-style
   border-color : $section-border-color
 
-.section > .section
-  border-left : $section-section-border-width solid $section-section-border-color 
+
+.section--lvl-1
+  margin-left : 0   
+  padding-left : $section-lvl-step-size 
+
+.section--lvl-2
+  margin-left : (-$section-lvl-step-size)   
+  padding-left : $section-lvl-step-size*2 
+
+.section--lvl-3
+  margin-left : (-2*$section-lvl-step-size)   
+  padding-left : $section-lvl-step-size*3 
+
+.section--lvl-4
+  margin-left : (-3*$section-lvl-step-size)   
+  padding-left : $section-lvl-step-size*4 
+
+.section--lvl-5
+  margin-left : (-4*$section-lvl-step-size)   
+  padding-left : $section-lvl-step-size*5 
+
 
 
 .section__head

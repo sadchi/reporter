@@ -1,3 +1,4 @@
+@import reset
 @import settings
 @import fonts
 @import boxes
@@ -7,17 +8,13 @@
 @import menus
 @import inputs
 @import loader
+@import navbar
 
 html
   @extend .base
   +default-font
   font-size : $font-size-base
-  // position  : relative
-  // overflow  : hidden
-
-
-// body
-//   @extend .main-container
+  overflow-y  : scroll
 
 .text
   margin: $default-margin 0

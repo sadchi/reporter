@@ -4,6 +4,9 @@
 
 $menu-back            : black !default
 $menu-color           : white !default
+$menu-active-back     : grey !default
+$menu-bottom-border   : 3px solid $menu-active-back !default
+
 $menu-padding         : 0 !default
 $menu-btn-padding     : 10px !default
 $menu-label-padding   : 10px !default
@@ -11,12 +14,13 @@ $menu-content-back    : grey !default
 $menu-content-color   : black !default
 $menu-content-padding : 10px !default
 
-
 .menu
   margin     : 0
   padding    : $menu-padding
   background : $menu-back
   color      : $menu-color
+  border-bottom : $menu-bottom-border
+
 
 
 .menu__header
@@ -31,8 +35,14 @@ $menu-content-padding : 10px !default
     background : rgba(#ffffff, .05)
 
 .menu__btn--pressed
-  background : rgba(#ffffff, .05)
-  
+  background : $menu-active-back
+
+
+.menu__btn--last
+  &:before
+    +flex-grow(1)
+    content: " "
+
 
 .menu__label
   padding : $menu-label-padding   
