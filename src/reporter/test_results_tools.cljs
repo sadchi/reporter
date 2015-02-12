@@ -2,6 +2,9 @@
   (:require [reporter.state :as state]))
 
 (def ^:private status-weight-map (clj->js ["FAIL" "ERROR" "UNDEFINED" "SKIPPED" "SUCCESS"]))
+
+(def ^:private bad-statuses #{"FAIL" "ERROR"})
+
 (def ^:private status-class-map
   {"FAIL" "error"
    "ERROR" "error"
@@ -29,6 +32,8 @@
 (defn status->class [s]
   (get status-class-map s ""))
 
+(defn bad-status? [s]
+  (contains? bad-statuses s))
 
 (defn simple-status-reduce-f [s1 s2]
   (cond

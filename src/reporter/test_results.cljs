@@ -73,25 +73,6 @@
 (defn test-result-special-mark [status]
   [:span.test-mark-sign {:class (status->class status)}])
 
-(defn test-result [state-map test-results path]
-  (let [flat-path (path/flatten-path path)
-        state (get state-map flat-path)
-        id (state/id state)
-        status (get-status state)
-        opened (state/opened? state)
-        test-info (->> test-results
-                       (filter (comp (partial = flat-path) :path))
-                       (first))
-        ]
-    [:div {:key id}
-     [h/section-head {:level  test-heading-level
-                      :opened opened
-                      :status status
-                      :path   path
-                      :state  state
-                      :extra  (test-result-special-mark status)}]
-     (when opened [test-result-content test-info])]))
-
 (defn test-result-alt [state path test-info]
   (fn []
     (let [id (state/id state)
