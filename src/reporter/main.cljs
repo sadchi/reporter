@@ -16,7 +16,7 @@
   (fn []
     (let [tab @active-tab
           items (get tabs tab)
-          _ (tools/log-obj "main items " items)
+          ;_ (tools/log-obj "main items " items)
           body [:div.container]]
       (into body (for [item items] [item])))))
 
@@ -104,13 +104,15 @@
         filler (ui/navbar-item {:id      (state/gen-id)
                                 :classes [:grow]})
 
-        opts (ui/options-btn {:id          (state/gen-id)
-                              :fn-on-click (fn [] (identity 1))})
+        only-fails (r/atom true)
 
-        opts-btn (ui/navbar-item {:id      (state/gen-id)
-                                  :items   [opts]
-                                  :classes [:hoverable]})
+        status-filter (ui/only-fail-filter-link {:id (state/gen-id)
+                                                 :text "only fail/error"
+                                                 :state-maps [func-state-map stat-state-map]
+                                                 :filter-state-atom only-fails})
 
+        status-filter-btn (ui/navbar-item {:id (state/gen-id)
+                                           :items [status-filter]})
 
         active-tab (r/atom :func)
 
@@ -124,6 +126,8 @@
                           :fn-active?  (fn [] (= :stat @active-tab))
                           :fn-activate (fn [] (reset! active-tab :stat))
                           :items       [stat-tab-text]})
+
+
 
         overall-func (o-stats/calculate-overall-stats func-tests)
         overall-stat (o-stats/calculate-overall-stats stat-tests)
@@ -145,7 +149,9 @@
                                :tabs       {:func [overall-func-sec (tree/tree {:structure func-report-structure
                                                                                 :state-map func-state-map
                                                                                 :test-results func-tests})]
-                                            :stat [overall-stat-sec]}}] (.getElementById js/document "main"))
-    (r/render-component [navbar status-label func-tab stat-tab filler opts-btn] (.getElementById js/document "header"))
+                                            :stat [overall-stat-sec (tree/tree {:structure stat-report-structure
+                                                                                :state-map stat-state-map
+                                                                                :test-results stat-tests})]}}] (.getElementById js/document "main"))
+    (r/render-component [navbar status-label func-tab stat-tab filler status-filter-btn] (.getElementById js/document "header"))
     (r/render-component [footer] (.getElementById js/document "footer"))
     ))

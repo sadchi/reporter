@@ -30,10 +30,9 @@
 
   :profiles {:dev
              {:plugins [[com.cemerick/austin "0.1.6"]]
-              :source-paths ["src" "dev"]
+              :source-paths ["src"]
               :cljsbuild {:builds {:reporter
-                                   {:source-paths ["dev"]
-                                    :compiler
+                                   {:compiler
                                     {:preamble ["reagent/react.js"]}}}}}
              :prod
              {:cljsbuild {:builds

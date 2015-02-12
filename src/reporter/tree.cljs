@@ -51,31 +51,33 @@
     (let [flat-path (path/flatten-path path)
           state (get state-map flat-path)
           sub-tree (get-in structure path)]
-      (if (= sub-tree :test)
-        (let [test-info (t-res-t/get-test-info test-results flat-path)]
-          [t-res/test-result-alt state path test-info])
-        (let [opened (state/opened? state)
-              status (t-res-t/get-status state)
-              total (state/get-count state)
-              fails (state/get-count state "FAIL")
-              errors (state/get-count state "ERROR")
-              level (dec (count path))
-              level-sec-class (str "section--lvl-" level)
-              id (state/id state)
-              body [:div.section {:class level-sec-class :key id}
-                    [h/section-head {:level  non-terminal-node-level
-                                     :status status
-                                     :path   path
-                                     :state  state
-                                     :extra  (h/heading-fails-stat (+ fails errors) total)}]]]
+      (if-not (state/visible? state)
+        [:div]
+        (if (= sub-tree :test)
+          (let [test-info (t-res-t/get-test-info test-results flat-path)]
+            [t-res/test-result-alt state path test-info])
+          (let [opened (state/opened? state)
+                status (t-res-t/get-status state)
+                total (state/get-count state)
+                fails (state/get-count state "FAIL")
+                errors (state/get-count state "ERROR")
+                level (dec (count path))
+                level-sec-class (str "section--lvl-" level)
+                id (state/id state)
+                body [:div.section {:class level-sec-class :key id}
+                      [h/section-head {:level  non-terminal-node-level
+                                       :status status
+                                       :path   path
+                                       :state  state
+                                       :extra  (h/heading-fails-stat (+ fails errors) total)}]]]
 
-          (if opened
-            (into body (for [k (sorted-keys-path-aware sub-tree)]
-                         [tree-node {:path         (conj path k)
-                                     :structure    structure
-                                     :state-map    state-map
-                                     :test-results test-results}]))
-            body))))))
+            (if opened
+              (into body (for [k (sorted-keys-path-aware sub-tree)]
+                           [tree-node {:path         (conj path k)
+                                       :structure    structure
+                                       :state-map    state-map
+                                       :test-results test-results}]))
+              body)))))))
 
 (defn tree [{:keys [structure state-map test-results]}]
   (fn []

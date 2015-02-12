@@ -1,6 +1,7 @@
 (ns reporter.ui-elems
   (:require [clojure.string :refer [join]]
-            [reporter.tools :as tools]))
+            [reporter.tools :as tools]
+            [reporter.state :as state]))
 
 (defn tab [{:keys [id fn-active? fn-activate items]}]
   (fn []
@@ -33,3 +34,17 @@
   (fn []
     ^{:key id} [:span.cog-sign {:on-click fn-on-click}]))
 
+(defn only-fail-filter-link [{:keys [id text state-maps filter-state-atom]}]
+  (fn []
+    (let [filter-active? @filter-state-atom
+          class (if filter-active? "active" "inactive")
+          f (if filter-active?
+              (partial state/apply-status-filter ["FAIL" "ERROR"])
+              state/undo-status-filter)
+          states (reduce into [] (map vals state-maps))
+          ;_ (tools/log-obj "f " f)
+          ;_ (tools/log-obj "states " states)
+          ]
+      (doseq [state states]
+        (state/update-it! state f))
+      ^ {:key id} [:span {:class class :on-click #(swap! filter-state-atom not)} text])))

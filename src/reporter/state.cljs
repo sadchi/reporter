@@ -1,5 +1,6 @@
 (ns reporter.state
-  (:require [reagent.core :as r]))
+  (:require [reagent.core :as r]
+            [clojure.set :refer [intersection]]))
 
 (def ^:private id-seq (atom 0))
 
@@ -39,7 +40,7 @@
 (defn mk-state []
   (r/atom {:id       (gen-id)
            :statuses {}
-           :reasons  {}
+           :reasons  #{}
            :visible? true
            :opened?  false}))
 
@@ -56,4 +57,27 @@
 
 (defn set-opened [state]
   (update-in state [:opened?] (fn [_] true)))
+
+(defn undo-status-filter [state]
+  (let [reasons (get state :reasons)
+        new-reasons (disj reasons :status)
+        new-visibility (if (= 0 (count new-reasons))
+                         true
+                         false)]
+    (assoc state :reasons new-reasons :visible? new-visibility)))
+
+(defn- get-non-zero-statuses [coll x]
+  (let [[k v] x]
+    (if (pos? v)
+      (conj coll k)
+      coll)))
+
+(defn apply-status-filter [expected-statuses state]
+  (let [exp-statuses (set expected-statuses)
+        act-statuses (reduce get-non-zero-statuses #{} (get state :statuses))
+        reasons (get state :reasons)
+        intersection-statuses (intersection exp-statuses act-statuses)]
+    (if (pos? (count intersection-statuses))
+      state
+      (assoc state :reasons (conj reasons :status) :visible? false))))
 
