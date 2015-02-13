@@ -2,7 +2,7 @@
   (:require [reporter.state :as state]
             [reporter.path :as path]
             [reporter.tools :as tools]
-            [reporter.test-results-tools :as t-res-tools]
+            [reporter.test-results-tools :as t-res-t]
             [clojure.string :refer [join]]))
 
 
@@ -28,14 +28,19 @@
 
 
 
-(defn section-head [{:keys [level status path state extra]}]
+(defn section-head [{:keys [level status path state extra mark-uncommon-statuses]}]
   (fn []
     (let [opened (state/opened? state)
-          id (state/id state)]
+          id (state/id state)
+          status-feature (when-not (t-res-t/common-status? status) (str " [" status "] "))
+          default-text (path/name-path-node (peek path))
+          text (if mark-uncommon-statuses
+                 (str default-text status-feature)
+                 default-text)]
       ^{:key id} [:div.section__head
                   {:on-click #(state/update-it! state state/flip-opened)}
                   (group-sign opened)
-                  (heading level (path/name-path-node (peek path)) (t-res-tools/status->class status))
+                  (heading level text (t-res-t/status->class status))
                   extra])))
 
 

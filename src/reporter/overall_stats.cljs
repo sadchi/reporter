@@ -74,10 +74,10 @@
   (let [{:keys [total-tests total-files total-combinations total-issues fail-rate per-status]} overall-stats
         bad-statuses (filter (fn [x] (let [[k _] x] (t-res-t/bad-status? k))) per-status)
         other-statuses (filter (fn [x] (let [[k _] x] (not (t-res-t/bad-status? k)))) per-status)
-        total-issues-caption (conj [:span "Total issues:"] (for [status bad-statuses] [:p (first status)]))
-        total-issues-counts (conj [:span total-issues] (for [status bad-statuses] [:p (second status)]))
-        other-statuses-caption (conj [:span "Other statuses:"] (for [status other-statuses] [:p (first status)]))
-        other-statuses-counts (conj [:span "\u00A0"] (for [status other-statuses] [:p (second status)]))]
+        total-issues-caption (conj [:span "Total issues:"] (for [status bad-statuses] ^{:key (state/gen-id)} [:p (first status)]))
+        total-issues-counts (conj [:span total-issues] (for [status bad-statuses] ^{:key (state/gen-id)} [:p (second status)]))
+        other-statuses-caption (conj [:span "Other statuses:"] (for [status other-statuses] ^{:key (state/gen-id)} [:p (first status)]))
+        other-statuses-counts (conj [:span "\u00A0"] (for [status other-statuses] ^{:key (state/gen-id)} [:p (second status)]))]
 
     [:div.inner-content
      [:table.simple-table.simple-table--no-borders

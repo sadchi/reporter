@@ -5,6 +5,8 @@
 
 (def ^:private bad-statuses #{"FAIL" "ERROR"})
 
+(def ^:private common-statuses #{"FAIL" "SUCCESS"})
+
 (def ^:private status-class-map
   {"FAIL" "error"
    "ERROR" "error"
@@ -34,6 +36,9 @@
 
 (defn bad-status? [s]
   (contains? bad-statuses s))
+
+(defn common-status? [s]
+  (contains? common-statuses s))
 
 (defn simple-status-reduce-f [s1 s2]
   (cond
