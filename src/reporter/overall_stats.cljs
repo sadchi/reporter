@@ -48,9 +48,9 @@
 
 (defn- calculate-per-status [test-results]
   (let [calc-statuses (fn [coll x]
-                        (-> (get coll x 0)
-                            (inc)
-                            (assoc coll x)))]
+                        (->> (get coll x 0)
+                             (inc)
+                             (assoc coll x)))]
     (->> (map :status test-results)
          (reduce calc-statuses {}))))
 
@@ -63,18 +63,21 @@
                     (* 100 (/ total-issues total-combinations))
                     0)
         per-status (calculate-per-status test-results)]
-    {:total-tests  total-tests
-     :total-files  total-files
+    {:total-tests        total-tests
+     :total-files        total-files
      :total-combinations total-combinations
-     :total-issues total-issues
-     :fail-rate    (.toFixed fail-rate 2)
-     :per-status   per-status}))
+     :total-issues       total-issues
+     :fail-rate          (.toFixed fail-rate 2)
+     :per-status         per-status}))
 
 (defn overview-content [overall-stats]
   (let [{:keys [total-tests total-files total-combinations total-issues fail-rate per-status]} overall-stats
-        bad-statuses (filter (fn [x] (let [[k _] x] t-res-t/bad-status? k)) per-status)
+        bad-statuses (filter (fn [x] (let [[k _] x] (t-res-t/bad-status? k))) per-status)
+        other-statuses (filter (fn [x] (let [[k _] x] (not (t-res-t/bad-status? k)))) per-status)
         total-issues-caption (conj [:span "Total issues:"] (for [status bad-statuses] [:p (first status)]))
-        total-issues-counts (conj [:span total-issues] (for [status bad-statuses] [:p (second status)]))]
+        total-issues-counts (conj [:span total-issues] (for [status bad-statuses] [:p (second status)]))
+        other-statuses-caption (conj [:span "Other statuses:"] (for [status other-statuses] [:p (first status)]))
+        other-statuses-counts (conj [:span "\u00A0"] (for [status other-statuses] [:p (second status)]))]
 
     [:div.inner-content
      [:table.simple-table.simple-table--no-borders
@@ -108,6 +111,12 @@
        [:td.simple-table__td.simple-table--no-borders
         (str fail-rate "%")]]
 
+      [:tr.simple-table--odd
+       [:td.simple-table__td.simple-table--no-borders.simple-table--20.simple-table--right
+        other-statuses-caption]
+       [:td.simple-table__td.simple-table--no-borders
+        other-statuses-counts]]
+
       ]]))
 
 (defn overview-section [overall-stats state-map path]
@@ -125,10 +134,10 @@
 (defn overview-section-alt [overall-stats state]
   (let [opened (state/opened? state)]
     [:div.section
-     [h/section-head {:level overview-section-level
+     [h/section-head {:level  overview-section-level
                       :opened opened
                       :status "UNDEFINED"
-                      :state state
-                      :path  ["Overview"]}]
+                      :state  state
+                      :path   ["Overview"]}]
      (when opened [overview-content overall-stats])]))
 
