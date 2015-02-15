@@ -37,7 +37,7 @@
 (defn only-fail-filter-link [{:keys [id text state-maps filter-state-atom]}]
   (fn []
     (let [filter-active? @filter-state-atom
-          class (if filter-active? "active" "inactive")
+          class (if filter-active? "active navbar__item--hoverable" "inactive navbar__item--hoverable")
           f (if filter-active?
               (partial state/apply-status-filter ["FAIL" "ERROR"])
               state/undo-status-filter)
@@ -48,3 +48,11 @@
       (doseq [state states]
         (state/update-it! state f))
       ^ {:key id} [:span {:class class :on-click #(swap! filter-state-atom not)} text])))
+
+(defn simple-trigger [{:keys [id text fn-active? fn-change-state]}]
+  (fn []
+    (let [active (fn-active?)
+          class (if active
+                  "active navbar__item--hoverable"
+                  "inactive navbar__item--hoverable")]
+      ^{:key id} [:span {:class class :on-click fn-change-state} text])))

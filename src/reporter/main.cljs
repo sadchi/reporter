@@ -106,13 +106,34 @@
 
         only-fails (r/atom true)
 
-        status-filter (ui/only-fail-filter-link {:id (state/gen-id)
-                                                 :text "only fail/error"
-                                                 :state-maps [func-state-map stat-state-map]
+        status-filter (ui/only-fail-filter-link {:id                (state/gen-id)
+                                                 :text              "only fail/error"
+                                                 :state-maps        [func-state-map stat-state-map]
                                                  :filter-state-atom only-fails})
 
-        status-filter-btn (ui/navbar-item {:id (state/gen-id)
+        status-filter-btn (ui/navbar-item {:id    (state/gen-id)
                                            :items [status-filter]})
+
+        flat-view (r/atom false)
+
+        flat-view-trigger (ui/simple-trigger {:id              (state/gen-id)
+                                              :text            "flat-view"
+                                              :fn-active?      #(deref flat-view)
+                                              :fn-change-state #(swap! flat-view not)})
+
+        flat-view-btn (ui/navbar-item {:id    (state/gen-id)
+                                       :items [flat-view-trigger]})
+
+        expand-all (r/atom false)
+
+        expand-all-trigger (ui/simple-trigger {:id              (state/gen-id)
+                                               :text            "expand-all"
+                                               :fn-active?      #(deref expand-all)
+                                               :fn-change-state #(swap! expand-all not)})
+
+        expand-all-btn (ui/navbar-item {:id    (state/gen-id)
+                                        :items [expand-all-trigger]})
+
 
         active-tab (r/atom :func)
 
@@ -146,12 +167,16 @@
     (def s-state stat-state-map)
 
     (r/render-component [main {:active-tab active-tab
-                               :tabs       {:func [overall-func-sec (tree/tree {:structure func-report-structure
-                                                                                :state-map func-state-map
-                                                                                :test-results func-tests})]
-                                            :stat [overall-stat-sec (tree/tree {:structure stat-report-structure
-                                                                                :state-map stat-state-map
-                                                                                :test-results stat-tests})]}}] (.getElementById js/document "main"))
-    (r/render-component [navbar status-label func-tab stat-tab filler status-filter-btn] (.getElementById js/document "header"))
+                               :tabs       {:func [overall-func-sec (tree/results-view {:structure       func-report-structure
+                                                                                        :state-map       func-state-map
+                                                                                        :test-results    func-tests
+                                                                                        :flat-view-atom  flat-view
+                                                                                        :expand-all-atom expand-all})]
+                                            :stat [overall-stat-sec (tree/results-view {:structure       stat-report-structure
+                                                                                        :state-map       stat-state-map
+                                                                                        :test-results    stat-tests
+                                                                                        :flat-view-atom  flat-view
+                                                                                        :expand-all-atom expand-all})]}}] (.getElementById js/document "main"))
+    (r/render-component [navbar status-label func-tab stat-tab filler expand-all-btn flat-view-btn status-filter-btn] (.getElementById js/document "header"))
     (r/render-component [footer] (.getElementById js/document "footer"))
     ))

@@ -12,10 +12,12 @@
 (def ^:private non-terminal-node-level 4)
 
 
-(defn sorted-keys-path-aware [coll]
-  (let [ks (keys coll)]
-    (sort-by (comp lower-case path/name-path-node) ks)))
+(defn- sort-by-str-val [coll]
+  (sort-by (comp lower-case path/name-path-node) coll))
 
+(defn- sorted-keys-path-aware [coll]
+  (let [ks (keys coll)]
+    (sort-by-str-val ks)))
 
 
 (defn root [sub-items]
@@ -51,8 +53,7 @@
     (let [flat-path (path/flatten-path path)
           state (get state-map flat-path)
           sub-tree (get-in structure path)]
-      (if-not (state/visible? state)
-        [:div]
+      (when (state/visible? state)
         (if (= sub-tree :test)
           (let [test-info (t-res-t/get-test-info test-results flat-path)]
             [t-res/test-result-alt state path test-info])
@@ -79,7 +80,7 @@
                                        :test-results test-results}]))
               body)))))))
 
-(defn tree [{:keys [structure state-map test-results]}]
+(defn- tree [{:keys [structure state-map test-results]}]
   (fn []
     ;(tools/log "tree rendering")
     (into [:div]
@@ -89,3 +90,31 @@
                         :state-map    state-map
                         :test-results test-results}]))))
 
+
+
+(defn- flat-results-item [{:keys [state path test-info]}]
+  (fn []
+    (let [visible (state/visible? state)]
+      (when visible
+        [t-res/test-result-alt state path test-info]))))
+
+(defn- flat-results [{:keys [state-map test-results]}]
+  (fn []
+    (let [paths (sort-by-str-val (map :path test-results))]
+      (into [:div] (for [path paths
+                         :let [state (get state-map path)
+                               test-info (t-res-t/get-test-info test-results path)]]
+                     [flat-results-item {:state     state
+                                         :path      path
+                                         :test-info test-info}])))))
+
+(defn results-view [{:keys [state-map flat-view-atom expand-all-atom] :as params}]
+  (fn []
+    (when @expand-all-atom
+      (doseq [state (vals state-map)]
+        (state/update-it! state state/set-opened))
+      (swap! expand-all-atom not))
+    [:div
+     (if @flat-view-atom
+       [flat-results params]
+       [tree params])]))

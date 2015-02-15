@@ -3,6 +3,7 @@
             [clojure.string :as string]
             [reporter.path :as path]
             [reporter.state :as state]
+            [reporter.common.string-utils :as string-utils]
             [reporter.test-results-tools :refer [get-status status->class]]))
 
 
@@ -23,19 +24,20 @@
 
 (defn meta-table [meta-item]
   [:div.sub-section [:div.simple-table__title (:name meta-item)]
-   [:table.simple-table
-    (for [[idx th] (map-indexed vector (:columns meta-item []))]
-      ^{:key idx} [:th.simple-table__th th])
-    (loop [data (:data meta-item)
-           idx 0
-           acc nil]
-      (if (is-table-empty? data)
-        (reverse acc)
-        (->> data
-             (map first)
-             (render-table-row idx)
-             (conj acc)
-             (recur (map next data) (inc idx)))))]])
+   [:div.can-be-wide
+    [:table.simple-table
+     (for [[idx th] (map-indexed vector (:columns meta-item []))]
+       ^{:key idx} [:th.simple-table__th th])
+     (loop [data (:data meta-item)
+            idx 0
+            acc nil]
+       (if (is-table-empty? data)
+         (reverse acc)
+         (->> data
+              (map first)
+              (render-table-row idx)
+              (conj acc)
+              (recur (map next data) (inc idx)))))]]])
 
 
 (defn meta-data-render [meta-data]
@@ -71,32 +73,35 @@
                                           \> "\u003E"
                                           \" "\u0022"
                                           \& "\u0026"
-                                          \' "\u0027"})]
+                                          \' "\u0027"})
+        link-with-zero-spaces (string-utils/add-zero-spaces escaped-link 10)]
     [:tr (when odd {:class "simple-table--odd"})
      [:td.simple-table__td name]
      [:td.simple-table__td
-      [:a {:href escaped-link} escaped-link]]]))
+      [:a {:href escaped-link} link-with-zero-spaces]]]))
 
 
 (defn fails-table [fails]
   (when-not (empty? fails)
     [:div.sub-section [:div.simple-table__title "Assert errors: "]
-     [:table.simple-table
-      [:th.simple-table__th.simple-table--20 "Type"]
-      [:th.simple-table__th "Message"]
-      (for [[idx fail] (map-indexed vector fails)
-            :let [odd (odd? idx)]]
-        ^{:key idx} [fail-record-render fail odd])]]))
+     [:div.can-be-wide
+      [:table.simple-table
+       [:th.simple-table__th.simple-table--20 "Type"]
+       [:th.simple-table__th "Message"]
+       (for [[idx fail] (map-indexed vector fails)
+             :let [odd (odd? idx)]]
+         ^{:key idx} [fail-record-render fail odd])]]]))
 
 (defn errors-table [errors]
   (when-not (empty? errors)
     [:div.sub-section [:div.simple-table__title "Internal exceptions: "]
-     [:table.simple-table
-      [:th.simple-table__th.simple-table--20 "Type"]
-      [:th.simple-table__th "Message and trace"]
-      (for [[idx error] (map-indexed vector errors)
-            :let [odd (odd? idx)]]
-        ^{:key idx} [error-record-render error odd])]]))
+     [:div.can-be-wide
+      [:table.simple-table
+       [:th.simple-table__th.simple-table--20 "Type"]
+       [:th.simple-table__th "Message and trace"]
+       (for [[idx error] (map-indexed vector errors)
+             :let [odd (odd? idx)]]
+         ^{:key idx} [error-record-render error odd])]]]))
 
 
 (defn assets-table [filename meta-data]
@@ -106,12 +111,13 @@
                  other-assets)]
     (when-not (empty? assets)
       [:div.sub-section [:div.simple-table__title "Assets: "]
-       [:table.simple-table
-        [:th.simple-table__th.simple-table--20 "Name"]
-        [:th.simple-table__th "Link"]
-        (for [[idx asset] (map-indexed vector assets)
-              :let [odd (odd? idx)]]
-          ^{:key idx} [asset-record-render asset odd])]])))
+       [:div.can-be-wide
+        [:table.simple-table
+         [:th.simple-table__th.simple-table--20 "Name"]
+         [:th.simple-table__th "Link"]
+         (for [[idx asset] (map-indexed vector assets)
+               :let [odd (odd? idx)]]
+           ^{:key idx} [asset-record-render asset odd])]]])))
 
 (defn test-result-content [test-info]
   (let [fails (:fails test-info [])
