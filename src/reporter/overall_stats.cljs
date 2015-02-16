@@ -24,7 +24,7 @@
                (recur others)))))))
 
 (defn- calculate-files-quantity [test-results]
-  (+
+  (max
     (->> test-results
          (map :filename)
          (filter (complement nil?))
@@ -119,7 +119,7 @@
 
       ]]))
 
-(defn overview-section [overall-stats state-map path]
+#_(defn overview-section [overall-stats state-map path]
   (let [state (get state-map path)
         opened (state/opened? state)]
     [:div.section
