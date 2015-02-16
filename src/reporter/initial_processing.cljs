@@ -64,7 +64,7 @@
 
 
 
-(defn mk-state-map [{:keys [test-results path-field status-field structure]}]
+#_(defn mk-state-map [{:keys [test-results path-field status-field structure]}]
   (let [vec->map (fn [coll x]
                    (let [[type path state] x]
                      (assoc coll path [type state])))

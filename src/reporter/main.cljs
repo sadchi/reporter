@@ -40,11 +40,6 @@
 
 (defn ^:export start []
   (let [struct-bldr #(init-p/build-report-structure % :path :test)
-        state-bldr (fn [tests structure]
-                     (init-p/mk-state-map {:test-results tests
-                                           :path-field   :path
-                                           :status-field :status
-                                           :structure    structure}))
         state-builder (fn [tests structure]
                         (init-p/create-state-map {:mk-state-f   state/mk-state
                                                   :structure    structure

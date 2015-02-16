@@ -138,6 +138,6 @@
                       :opened opened
                       :status "UNDEFINED"
                       :state  state
-                      :path   ["Overview"]}]
+                      :text "Overview"}]
      (when opened [overview-content overall-stats])]))
 

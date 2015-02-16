@@ -39,7 +39,7 @@
                 [h/section-head {:level  non-terminal-node-level
                                  :opened opened
                                  :status status
-                                 :path   path
+                                 :text (path/name-path-node (peek path))
                                  :state  state
                                  :extra  (h/heading-fails-stat (+ fails errors) total)}]]
           _ (tools/log-obj "sub-items " sub-items)]
@@ -56,7 +56,9 @@
       (when (state/visible? state)
         (if (= sub-tree :test)
           (let [test-info (t-res-t/get-test-info test-results flat-path)]
-            [t-res/test-result-alt state path test-info])
+            [t-res/test-result-alt {:state     state
+                                    :path      path
+                                    :test-info test-info}])
           (let [opened (state/opened? state)
                 status (t-res-t/get-status state)
                 total (state/get-count state)
@@ -68,7 +70,7 @@
                 body [:div.section {:class level-sec-class :key id}
                       [h/section-head {:level  non-terminal-node-level
                                        :status status
-                                       :path   path
+                                       :text (path/name-path-node (peek path))
                                        :state  state
                                        :extra  (h/heading-fails-stat (+ fails errors) total)}]]]
 
@@ -96,7 +98,9 @@
   (fn []
     (let [visible (state/visible? state)]
       (when visible
-        [t-res/test-result-alt state path test-info]))))
+        [t-res/test-result-alt {:state     state
+                                :caption   (path/name-path-node path)
+                                :test-info test-info}]))))
 
 (defn- flat-results [{:keys [state-map test-results]}]
   (fn []

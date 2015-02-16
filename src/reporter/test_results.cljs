@@ -133,18 +133,19 @@
 (defn test-result-special-mark [status]
   [:span.test-mark-sign {:class (status->class status)}])
 
-(defn test-result-alt [state path test-info]
+(defn test-result-alt [{:keys [state path test-info caption]}]
   (fn []
     (let [id (state/id state)
           status (get-status state)
           opened (state/opened? state)
           level (dec (count path))
+          text (if caption caption (path/name-path-node (peek path)))
           level-sec-class (str "section--lvl-" level)]
       [:div {:key id :class level-sec-class}
        [h/section-head {:level                  test-heading-level
                         :opened                 opened
                         :status                 status
-                        :path                   path
+                        :text text
                         :state                  state
                         :extra                  (test-result-special-mark status)
                         :mark-uncommon-statuses true}]

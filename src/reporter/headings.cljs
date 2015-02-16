@@ -28,19 +28,18 @@
 
 
 
-(defn section-head [{:keys [level status path state extra mark-uncommon-statuses]}]
+(defn section-head [{:keys [level status text state extra mark-uncommon-statuses]}]
   (fn []
     (let [opened (state/opened? state)
           id (state/id state)
           status-feature (when-not (t-res-t/common-status? status) (str " [" status "] "))
-          default-text (path/name-path-node (peek path))
-          text (if mark-uncommon-statuses
-                 (str default-text status-feature)
-                 default-text)]
+          final-text (if mark-uncommon-statuses
+                       (str text status-feature)
+                       text)]
       ^{:key id} [:div.section__head
                   {:on-click #(state/update-it! state state/flip-opened)}
                   (group-sign opened)
-                  (heading level text (t-res-t/status->class status))
+                  (heading level final-text (t-res-t/status->class status))
                   extra])))
 
 
