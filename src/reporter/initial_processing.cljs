@@ -30,7 +30,7 @@
 
 
 (defn- mk-path [structure path]
-  (if (= (get-in structure path) :test)
+  (if (= (get-in structure path) [:test])
     [path]
     (let [sub-tree (get-in structure path)
           coll [path]
@@ -158,7 +158,7 @@
 
 
 (defn- process-node [structure path]
-  (if (= (get-in structure path) :test)
+  (if (= (get-in structure path) [:test])
     []
     (let [sub-tree (get-in structure path)
           childs (keys sub-tree)

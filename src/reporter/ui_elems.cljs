@@ -56,3 +56,7 @@
                   "active navbar__item--hoverable"
                   "inactive navbar__item--hoverable")]
       ^{:key id} [:span {:class class :on-click fn-change-state} text])))
+
+(defn simple-btn [{:keys [id text f]}]
+  (fn []
+    ^{:key id} [:span {:class "neutral navbar__item--hoverable" :on-click f} text]))

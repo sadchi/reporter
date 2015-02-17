@@ -66,6 +66,12 @@
         ^{:key 2} [:p (for [trace-line trace-lines]
                         (list trace-line [:br]))])]]))
 
+(defn- path->href [s]
+  (let [prefix "file://"
+        removed-start-slashes (string/replace s #"^\\\\" "")
+        final-s (string/replace removed-start-slashes #"\\" "/")]
+    (str prefix final-s)))
+
 (defn asset-record-render [asset odd]
   (let [name (:name asset)
         link (:data asset)
@@ -74,11 +80,12 @@
                                           \" "\u0022"
                                           \& "\u0026"
                                           \' "\u0027"})
-        link-with-zero-spaces (string-utils/add-zero-spaces escaped-link 10)]
+        link-with-zero-spaces (string-utils/add-zero-spaces escaped-link 10)
+        href (path->href escaped-link)]
     [:tr (when odd {:class "simple-table--odd"})
      [:td.simple-table__td name]
      [:td.simple-table__td
-      [:a {:href escaped-link} link-with-zero-spaces]]]))
+      [:a {:href href} link-with-zero-spaces]]]))
 
 
 (defn fails-table [fails]

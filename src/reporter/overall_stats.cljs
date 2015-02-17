@@ -119,25 +119,15 @@
 
       ]]))
 
-#_(defn overview-section [overall-stats state-map path]
-  (let [state (get state-map path)
-        opened (state/opened? state)]
-    [:div.section
-     [h/section-head {:level  overview-section-level
-                      :opened opened
-                      :status "UNDEFINED"
-                      :state  state
-                      :path   path}]
-     (when opened [overview-content overall-stats])]))
-
-
-(defn overview-section-alt [overall-stats state]
-  (let [opened (state/opened? state)]
-    [:div.section
-     [h/section-head {:level  overview-section-level
-                      :opened opened
-                      :status "UNDEFINED"
-                      :state  state
-                      :text "Overview"}]
-     (when opened [overview-content overall-stats])]))
+(defn overview-section-alt [{:keys [overall-stats state sec-lvl]}]
+  (fn []
+    (let [opened (state/opened? state)
+          class (if sec-lvl (str "section--lvl-" sec-lvl) "")]
+      [:div.section {:class class}
+       [h/section-head {:level  overview-section-level
+                        :opened opened
+                        :status "UNDEFINED"
+                        :state  state
+                        :text   "Overview"}]
+       (when opened [overview-content overall-stats])])))
 

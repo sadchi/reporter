@@ -6,6 +6,7 @@
             [reporter.tools :as tools]
             [reporter.test-results-tools :as t]
             [reporter.ui-elems :as ui]
+            [reporter.common.statemap-utils :as s-map-utils]
             [reagent.core :as r]
             [reporter.overall-stats :as o-stats]
             [goog.string :as gstring]
@@ -39,7 +40,7 @@
 
 
 (defn ^:export start []
-  (let [struct-bldr #(init-p/build-report-structure % :path :test)
+  (let [struct-bldr #(init-p/build-report-structure % :path [:test])
         state-builder (fn [tests structure]
                         (init-p/create-state-map {:mk-state-f   state/mk-state
                                                   :structure    structure
@@ -119,15 +120,19 @@
         flat-view-btn (ui/navbar-item {:id    (state/gen-id)
                                        :items [flat-view-trigger]})
 
-        expand-all (r/atom false)
+        expand-all-btn (ui/simple-btn {:id   (state/gen-id)
+                                       :text "expand-all"
+                                       :f    #(s-map-utils/expand-all (into func-state-map stat-state-map))})
 
-        expand-all-trigger (ui/simple-trigger {:id              (state/gen-id)
-                                               :text            "expand-all"
-                                               :fn-active?      #(deref expand-all)
-                                               :fn-change-state #(swap! expand-all not)})
+        expand-all (ui/navbar-item {:id    (state/gen-id)
+                                    :items [expand-all-btn]})
 
-        expand-all-btn (ui/navbar-item {:id    (state/gen-id)
-                                        :items [expand-all-trigger]})
+        collapse-all-btn (ui/simple-btn {:id   (state/gen-id)
+                                         :text "collapse-all"
+                                         :f    #(s-map-utils/collapse-all (into func-state-map stat-state-map))})
+
+        collapse-all (ui/navbar-item {:id    (state/gen-id)
+                                      :items [collapse-all-btn]})
 
 
         active-tab (r/atom :func)
@@ -148,13 +153,18 @@
         overall-func (o-stats/calculate-overall-stats func-tests)
         overall-stat (o-stats/calculate-overall-stats stat-tests)
 
-        overall-func-sec-state (state/mk-state)
-        overall-func-sec (fn []
-                           (o-stats/overview-section-alt overall-func overall-func-sec-state))
+        overall-func-sec (o-stats/overview-section-alt {:overall-stats overall-func
+                                                        :state         (state/mk-state)})
 
-        overall-stat-sec-state (state/mk-state)
-        overall-stat-sec (fn []
-                           (o-stats/overview-section-alt overall-stat overall-stat-sec-state))
+        overall-stat-sec (o-stats/overview-section-alt {:overall-stats overall-stat
+                                                        :state         (state/mk-state)})
+
+        overall-func-sec-inner (o-stats/overview-section-alt {:overall-stats overall-func
+                                                              :state         (state/mk-state)
+                                                              :sec-lvl       1})
+
+
+        func-report-structure (assoc-in func-report-structure ["FiPosBatch" "Overview"] [:external overall-func-sec-inner])
         ]
 
     (def f-state func-state-map)
@@ -162,16 +172,15 @@
     (def s-state stat-state-map)
 
     (r/render-component [main {:active-tab active-tab
-                               :tabs       {:func [overall-func-sec (tree/results-view {:structure       func-report-structure
-                                                                                        :state-map       func-state-map
-                                                                                        :test-results    func-tests
-                                                                                        :flat-view-atom  flat-view
-                                                                                        :expand-all-atom expand-all})]
-                                            :stat [overall-stat-sec (tree/results-view {:structure       stat-report-structure
-                                                                                        :state-map       stat-state-map
-                                                                                        :test-results    stat-tests
-                                                                                        :flat-view-atom  flat-view
-                                                                                        :expand-all-atom expand-all})]}}] (.getElementById js/document "main"))
-    (r/render-component [navbar status-label func-tab stat-tab filler expand-all-btn flat-view-btn status-filter-btn] (.getElementById js/document "header"))
+                               :tabs       {:func [overall-func-sec (tree/results-view {:structure      func-report-structure
+                                                                                        :state-map      func-state-map
+                                                                                        :test-results   func-tests
+                                                                                        :flat-view-atom flat-view})]
+                                            :stat [overall-stat-sec (tree/results-view {:structure      stat-report-structure
+                                                                                        :state-map      stat-state-map
+                                                                                        :test-results   stat-tests
+                                                                                        :flat-view-atom flat-view})]}}] (.getElementById js/document "main"))
+    (r/render-component [navbar status-label func-tab stat-tab filler collapse-all expand-all flat-view-btn status-filter-btn]
+                        (.getElementById js/document "header"))
     (r/render-component [footer] (.getElementById js/document "footer"))
     ))

@@ -58,6 +58,10 @@
 (defn set-opened [state]
   (update-in state [:opened?] (fn [_] true)))
 
+(defn set-not-opened [state]
+  (update-in state [:opened?] (fn [_] false)))
+
+
 (defn undo-status-filter [state]
   (let [reasons (get state :reasons)
         new-reasons (disj reasons :status)
