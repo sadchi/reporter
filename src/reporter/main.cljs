@@ -159,12 +159,8 @@
         overall-stat-sec (o-stats/overview-section-alt {:overall-stats overall-stat
                                                         :state         (state/mk-state)})
 
-        overall-func-sec-inner (o-stats/overview-section-alt {:overall-stats overall-func
-                                                              :state         (state/mk-state)
-                                                              :sec-lvl       1})
-
-
-        func-report-structure (assoc-in func-report-structure ["FiPosBatch" "Overview"] [:external overall-func-sec-inner])
+        func-report-structure (o-stats/inject-overview-per-top-level func-report-structure func-tests)
+        stat-report-structure (o-stats/inject-overview-per-top-level stat-report-structure stat-tests)
         ]
 
     (def f-state func-state-map)

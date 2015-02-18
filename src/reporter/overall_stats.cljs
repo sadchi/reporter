@@ -1,5 +1,6 @@
 (ns reporter.overall-stats
   (:require [reporter.state :as state]
+            [reporter.tools :as tools]
             [reporter.test-results-tools :as t-res-t]
             [reporter.headings :as h]))
 
@@ -123,7 +124,7 @@
   (fn []
     (let [opened (state/opened? state)
           class (if sec-lvl (str "section--lvl-" sec-lvl) "")]
-      [:div.section {:class class}
+      [:div {:class class}
        [h/section-head {:level  overview-section-level
                         :opened opened
                         :status "UNDEFINED"
@@ -131,3 +132,29 @@
                         :text   "Overview"}]
        (when opened [overview-content overall-stats])])))
 
+(defn inject-overview-per-top-level [structure test-results]
+  (let [mk-path (fn [x]
+                  (flatten (into [] [x])))
+        child? (fn [parent-path x]
+                 (let [flat-parent (mk-path parent-path)
+                       parent-count (count flat-parent)
+                       pretender-path (:path x)
+                       pretender-count (count pretender-path)]
+                   (if (<= pretender-count parent-count)
+                     false
+                     (= flat-parent (subvec pretender-path 0 parent-count)))))
+        update-struct (fn [coll x]
+                        (if-not (nil? x)
+                          (let [path (first x)
+                                component (second x)]
+                            (assoc-in coll path [:external component]))
+                          coll))]
+    (reduce update-struct structure
+            (for [k (keys structure)]
+              (when-not (= (get structure k) [:test])
+                (let [filtered-results (filter (partial child? k) test-results)
+                      stats (calculate-overall-stats filtered-results)
+                      overview-sec-path [k "#Overview"]]
+                  [overview-sec-path (overview-section-alt {:overall-stats stats
+                                                            :state         (state/mk-state)
+                                                            :sec-lvl       1})]))))))

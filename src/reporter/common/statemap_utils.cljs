@@ -10,7 +10,7 @@
     (reduce val-not-root '() state-map)))
 
 (defn- apply-to-all-not-root [state-map f]
-  (doseq [val (except-root-vals state-map)]
+  (doseq [val (filter state/visible? (except-root-vals state-map))]
     (state/update-it! val f)))
 
 (defn expand-all [state-map]
