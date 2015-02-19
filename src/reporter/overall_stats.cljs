@@ -1,6 +1,7 @@
 (ns reporter.overall-stats
   (:require [reporter.state :as state]
             [reporter.tools :as tools]
+            [reporter.html-ui.tooltip :as tooltip]
             [reporter.test-results-tools :as t-res-t]
             [reporter.headings :as h]))
 
@@ -71,13 +72,24 @@
      :fail-rate          (.toFixed fail-rate 2)
      :per-status         per-status}))
 
+(def ^:private status-descs {"SUCCESS"   "Everything went ok."
+                             "ERROR"     "Exception/s occured during test scenario execution. Probably the test is broken."
+                             "FAIL"      "One or more asserts failed."
+                             "UNDEFINED" "Such status occured when a test din't provide any status. Looks like neither success nor fail."
+                             "SKIPPED"   "Such status occured when a test was not applicable to certain data source."})
+
+(defn tooltiped-status [s]
+  (let [text (get status-descs s "No description.")]
+    ^{:key (state/gen-id)} [:p {:on-mouse-enter (partial tooltip/show-tooltip text :right) ;:on-mouse-leave tooltip/hide-tooltip
+                                } s]))
+
 (defn overview-content [overall-stats]
   (let [{:keys [total-tests total-files total-combinations total-issues fail-rate per-status]} overall-stats
         bad-statuses (filter (fn [x] (let [[k _] x] (t-res-t/bad-status? k))) per-status)
         other-statuses (filter (fn [x] (let [[k _] x] (not (t-res-t/bad-status? k)))) per-status)
-        total-issues-caption (conj [:span "Total issues:"] (for [status bad-statuses] ^{:key (state/gen-id)} [:p (first status)]))
+        total-issues-caption (conj [:span "Total issues:"] (for [status bad-statuses] (tooltiped-status (first status))))
         total-issues-counts (conj [:span total-issues] (for [status bad-statuses] ^{:key (state/gen-id)} [:p (second status)]))
-        other-statuses-caption (conj [:span "Other statuses:"] (for [status other-statuses] ^{:key (state/gen-id)} [:p (first status)]))
+        other-statuses-caption (conj [:span "Other statuses:"] (for [status other-statuses] (tooltiped-status (first status))))
         other-statuses-counts (conj [:span "\u00A0"] (for [status other-statuses] ^{:key (state/gen-id)} [:p (second status)]))]
 
     [:div.inner-content

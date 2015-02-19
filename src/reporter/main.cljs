@@ -6,6 +6,7 @@
             [reporter.tools :as tools]
             [reporter.test-results-tools :as t]
             [reporter.ui-elems :as ui]
+            [reporter.html-ui.tooltip :as tooltip]
             [reporter.common.statemap-utils :as s-map-utils]
             [reagent.core :as r]
             [reporter.overall-stats :as o-stats]
@@ -179,4 +180,5 @@
     (r/render-component [navbar status-label func-tab stat-tab filler collapse-all expand-all flat-view-btn status-filter-btn]
                         (.getElementById js/document "header"))
     (r/render-component [footer] (.getElementById js/document "footer"))
+    (r/render-component [tooltip/tooltip] (.getElementById js/document "tooltip"))
     ))

@@ -5,6 +5,7 @@
     %link(rel='stylesheet' type='text/css' href='report.css')
     %script(src='data.js')
   %body
+    %div#tooltip
     %div.main-container
       %div#header
       %div#main
@@ -12,7 +13,7 @@
           .loader
             .loader__spinner
             .loader__text Report generation ...
-            .loader__text ... Please, wait.
+            .loader__text ... Or something went wrong.
       %div#footer
     %script(src='report.js')
     %script reporter.main.start();
