@@ -20,32 +20,37 @@
 (defn- offset [x]
   (loop [elem x
          acc [0 0]]
-    (tools/log-obj "elem " elem)
-    (tools/log-obj "acc " acc)
+    ;(tools/log-obj "elem " elem)
+    ;(tools/log-obj "acc " acc)
     (if (= "BODY" (.-tagName elem))
       acc
       (recur (.-offsetParent elem) [(+ (first acc) (.-offsetLeft elem)) (+ (second acc) (.-offsetTop elem))]))))
 
 (defn show-tooltip [text align event]
   (let [target (.-target event)
-        align-named (name align)
-        left (.-offsetLeft target)
-        top (.-offsetTop target)
-        ;_ (tools/log-obj "old left: " left)
-        ;_ (tools/log-obj "old top: " top)
         [left top] (offset target)
         ;_ (tools/log-obj "left: " left)
         ;_ (tools/log-obj "top: " top)
         width (.-offsetWidth target)
         height (.-offsetHeight target)
-        align-final (if (contains? #{"left" "right" "center"} align-named) align-named "center")
-        ;_ (tools/log-obj "align-final: " align-final)
-        x (+ left (/ width 2))
-        y (+ top height)]
+        ;_ (tools/log-obj "width: " width)
+        ;_ (tools/log-obj "height: " height)
+        align-final (if (contains? #{:left :right :center} align) align :center)
+
+        x (condp = align-final
+            :left left
+            :right (+ left width)
+            :center (+ left (/ width 2)))
+
+        y (+ top height)
+        ;_ (tools/log-obj "x: " x)
+        ;_ (tools/log-obj "y: " y)
+        ]
+
     (reset! tooltip-atom {:text  text
                           :x     x
                           :y     y
-                          :align align-final})))
+                          :align (name align-final)})))
 
 (defn hide-tooltip []
   (reset! tooltip-atom nil))

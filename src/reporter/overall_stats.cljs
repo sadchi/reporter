@@ -80,8 +80,7 @@
 
 (defn tooltiped-status [s]
   (let [text (get status-descs s "No description.")]
-    ^{:key (state/gen-id)} [:p {:on-mouse-enter (partial tooltip/show-tooltip text :right) ;:on-mouse-leave tooltip/hide-tooltip
-                                } s]))
+    ^{:key (state/gen-id)} [:p {:on-mouse-enter (partial tooltip/show-tooltip text :right) :on-mouse-leave tooltip/hide-tooltip} s]))
 
 (defn overview-content [overall-stats]
   (let [{:keys [total-tests total-files total-combinations total-issues fail-rate per-status]} overall-stats
